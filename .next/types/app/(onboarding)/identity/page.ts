@@ -1,4 +1,4 @@
-// File: C:\Users\panne\Downloads\Mid\src\app\(onboarding)\identity\page.tsx
+// File: /home/prajwal-k/VS Code/MidnightHack/MidnightHack/src/app/(onboarding)/identity/page.tsx
 import * as entry from '../../../../../src/app/(onboarding)/identity/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

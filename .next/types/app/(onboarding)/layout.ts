@@ -1,4 +1,4 @@
-// File: C:\Users\panne\Downloads\Mid\src\app\(onboarding)\layout.tsx
+// File: /home/prajwal-k/VS Code/MidnightHack/MidnightHack/src/app/(onboarding)/layout.tsx
 import * as entry from '../../../../src/app/(onboarding)/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

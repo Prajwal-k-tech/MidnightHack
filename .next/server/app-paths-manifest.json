@@ -1,8 +1,6 @@
 {
+  "/demo/page": "app/demo/page.js",
   "/page": "app/page.js",
   "/(onboarding)/identity/page": "app/(onboarding)/identity/page.js",
-  "/(onboarding)/professional/page": "app/(onboarding)/professional/page.js",
-  "/(onboarding)/preferences/page": "app/(onboarding)/preferences/page.js",
-  "/(onboarding)/complete/page": "app/(onboarding)/complete/page.js",
   "/(onboarding)/welcome/page": "app/(onboarding)/welcome/page.js"
 }
