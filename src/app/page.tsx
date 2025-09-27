@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { WalletConnect } from '@/components/wallet/WalletConnect';
 import { NetworkStatus } from '@/components/network/NetworkStatus';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
@@ -11,10 +13,20 @@ import BlurInText from '@/components/ui/BlurInText';
 import { ScrollingText } from '@/components/ui/ScrollingText';
 import { motion, AnimatePresence } from 'framer-motion';
 
-
-
 export default function Home() {
-  const { isConnected } = useWalletStore();
+  const { isConnected, hasCompletedOnboarding } = useWalletStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isConnected && !hasCompletedOnboarding) {
+      router.push('/welcome');
+    }
+  }, [isConnected, hasCompletedOnboarding, router]);
+
+  // If user is connected but hasn't onboarded, this page is effectively blank while redirecting.
+  if (isConnected && !hasCompletedOnboarding) {
+    return <div className="h-screen w-screen bg-background"></div>; // Or a loading spinner
+  }
 
   return (
     <div className="h-screen w-screen flex flex-col items-center font-sans overflow-hidden relative">
@@ -30,41 +42,42 @@ export default function Home() {
       </header>
 
       <main className="w-full max-w-6xl flex-grow flex flex-col justify-center items-center p-6">
-                <motion.div
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeInOut' }}
           className="w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
         >
           <div className="space-y-4">
-                        <BlurInText
+            <BlurInText
               text="Privacy-First Dating."
               className="text-5xl font-heading text-[#014c8f] dark:text-[#ab86e3] leading-tight"
             />
             <p className="text-lg text-muted-foreground">
               Welcome to the future of online dating, powered by Midnight. Your data, your control.
             </p>
-                    <AnimatePresence>
-          {!isConnected && (
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.98 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-            >
-              <Alert variant="destructive" className="mt-6">
-                <XCircle className="h-5 w-5" />
-                <AlertTitle className="font-bold">Connect Your Wallet</AlertTitle>
-                <AlertDescription>
-                  Please connect your Midnight Lace wallet to begin.
-                </AlertDescription>
-              </Alert>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            <AnimatePresence>
+              {!isConnected && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -20, scale: 0.98 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                >
+                  <Alert variant="destructive" className="mt-6">
+                    <XCircle className="h-5 w-5" />
+                    <AlertTitle className="font-bold">Connect Your Wallet</AlertTitle>
+                    <AlertDescription>
+                      Please connect your Midnight Lace wallet to begin.
+                    </AlertDescription>
+                  </Alert>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="w-full">
+            {/* After onboarding, this could show a dashboard or the main app view */}
             <ContractInterface />
           </div>
         </motion.div>

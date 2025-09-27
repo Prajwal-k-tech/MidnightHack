@@ -10,6 +10,36 @@
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
+    ],
+    "/(onboarding)/welcome/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(onboarding)/welcome/page.js"
+    ],
+    "/(onboarding)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(onboarding)/layout.js"
+    ],
+    "/(onboarding)/identity/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(onboarding)/identity/page.js"
+    ],
+    "/(onboarding)/professional/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(onboarding)/professional/page.js"
+    ],
+    "/(onboarding)/preferences/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(onboarding)/preferences/page.js"
+    ],
+    "/(onboarding)/complete/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(onboarding)/complete/page.js"
     ]
   }
 }

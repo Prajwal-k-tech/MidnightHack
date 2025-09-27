@@ -14,6 +14,11 @@ interface WalletStore {
   isConnected: boolean
   isConnecting: boolean
   walletState: WalletState | null
+  hasCompletedOnboarding: boolean;
+  setHasCompletedOnboarding: (status: boolean) => void;
+  rules: any[];
+  addRule: (rule: any) => void;
+  removeRule: (ruleId: number) => void;
   error: string | null
   
   // Actions
@@ -78,7 +83,12 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
   disconnect: async () => {
     set({ 
       isConnected: false, 
-      walletState: null, 
+      walletState: null,
+    hasCompletedOnboarding: false, // Default to false
+    setHasCompletedOnboarding: (status: boolean) => set({ hasCompletedOnboarding: status }),
+    rules: [],
+    addRule: (rule: any) => set(state => ({ rules: [...state.rules, rule] })),
+    removeRule: (ruleId: number) => set(state => ({ rules: state.rules.filter(r => r.id !== ruleId) })), 
       error: null 
     })
   },

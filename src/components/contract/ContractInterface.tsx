@@ -63,16 +63,16 @@ export function ContractInterface() {
 
   return (
     <div className="w-full space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-6">
         <div className="flex flex-col items-center justify-center bg-muted/30 p-4 rounded-lg border">
-          <span className="text-xs text-muted-foreground">Total Users</span>
-          <Badge variant="default" className="mt-1 text-lg px-3 py-1">
+          <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Users</span>
+          <Badge variant="default" className="mt-2 text-lg px-3 py-1">
             {contractState.totalUsers}
           </Badge>
         </div>
         <div className="flex flex-col items-center justify-center bg-muted/30 p-4 rounded-lg border">
-          <span className="text-xs text-muted-foreground">Wallet</span>
-          <Badge variant={isConnected ? 'default' : 'destructive'} className="mt-1 text-lg px-3 py-1">
+          <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Wallet</span>
+          <Badge variant={isConnected ? 'default' : 'destructive'} className="mt-2 text-lg px-3 py-1">
             {isConnected ? "Connected" : "Disconnected"}
           </Badge>
         </div>
