@@ -26,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn('font-gapsans antialiased')}>
+      <body className={cn('font-sans antialiased')}>
         <div className="dark:glow-background">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative min-h-screen bg-background text-foreground">

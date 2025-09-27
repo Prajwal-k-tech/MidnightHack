@@ -18,7 +18,7 @@ const config = {
     extend: {
       fontFamily: {
         heading: ['Telma', 'sans-serif'],
-        gapsans: ['Gapsans', 'sans-serif'],
+        sans: ['Gapsans', 'sans-serif'],
       },
       colors: {
         // Custom Palette
@@ -68,6 +68,15 @@ const config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      animation: {
+        'scroll-loop': 'scroll-loop 20s linear infinite',
+      },
+      keyframes: {
+        'scroll-loop': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-100%)' },
+        },
       },
     },
   },

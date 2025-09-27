@@ -39,7 +39,7 @@ export function WalletConnect() {
 className="flex items-center gap-2 px-3"
           >
             <div className="h-3 w-3 rounded-full bg-primary" />
-            <span className="text-sm font-gapsans">
+<span className="text-sm">
               {walletState.address?.slice(0, 6)}...{walletState.address?.slice(-4)}
             </span>
           </Button>
@@ -65,7 +65,7 @@ className="flex items-center gap-2 px-3"
       {isConnecting ? (
         <>
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-sm font-gapsans">Connecting...</span>
+          <span className="text-sm">Connecting...</span>
         </>
       ) : (
         <>

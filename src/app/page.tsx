@@ -8,6 +8,7 @@ import { useWalletStore } from '@/lib/stores/walletStore';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { XCircle } from 'lucide-react';
 import BlurInText from '@/components/ui/BlurInText';
+import { ScrollingText } from '@/components/ui/ScrollingText';
 import { motion, AnimatePresence } from 'framer-motion';
 
 
@@ -18,7 +19,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col items-center font-sans overflow-hidden relative">
       <header className="w-full max-w-6xl flex-shrink-0 flex justify-between items-center p-6">
-        <h1 className="text-4xl font-heading font-bold text-gradient-animation bg-gradient-to-r from-[#5768d2] via-[#ca9ae4] to-[#ff9df0]">
+        <h1 className="text-4xl font-heading font-bold text-gradient-animation bg-gradient-to-r from-[#5768d2] via-[#ca9ae4] to-[#ff9df0] leading-normal">
           dApp Dating
         </h1>
         <div className="flex items-center space-x-3">
@@ -70,7 +71,9 @@ export default function Home() {
       </main>
 
       <footer className="w-full max-w-6xl flex-shrink-0 text-center text-muted-foreground p-6">
-        &copy; {new Date().getFullYear()} dApp Dating. All rights reserved.
+        <ScrollingText>
+          &copy; {new Date().getFullYear()} dApp Dating. All rights reserved.
+        </ScrollingText>
       </footer>
     </div>
   );
