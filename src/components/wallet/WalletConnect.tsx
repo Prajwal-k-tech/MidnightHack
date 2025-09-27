@@ -1,42 +1,57 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
-import { useWalletStore } from '@/lib/stores/walletStore'
-import { Loader2, Wallet } from 'lucide-react'
+import { Button } from '@/components/ui/button';
+import { useWalletStore } from '@/lib/stores/walletStore';
+import { Loader2, Wallet, LogOut } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function WalletConnect() {
-  const { isConnected, isConnecting, connect, disconnect, walletState } = useWalletStore()
+  const { isConnected, isConnecting, connect, disconnect, walletState } = useWalletStore();
 
   const handleConnect = async () => {
     try {
-      await connect()
+      await connect();
     } catch (error) {
-      console.error('Failed to connect wallet:', error)
+      console.error('Failed to connect wallet:', error);
     }
-  }
+  };
 
   const handleDisconnect = async () => {
     try {
-      await disconnect()
+      await disconnect();
     } catch (error) {
-      console.error('Failed to disconnect wallet:', error)
+      console.error('Failed to disconnect wallet:', error);
     }
-  }
+  };
 
   if (isConnected && walletState) {
     return (
-      <Button
-        onClick={handleDisconnect}
-        variant="outline"
-        size="sm"
-        className="flex items-center gap-2"
-      >
-        <div className="h-2 w-2 rounded-full bg-green-500" />
-        <span className="text-xs">
-          {walletState.address?.slice(0, 6)}...{walletState.address?.slice(-4)}
-        </span>
-      </Button>
-    )
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            size="default"
+className="flex items-center gap-2 px-3"
+          >
+            <div className="h-3 w-3 rounded-full bg-primary" />
+            <span className="text-sm font-gapsans">
+              {walletState.address?.slice(0, 6)}...{walletState.address?.slice(-4)}
+            </span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={handleDisconnect} className="cursor-pointer">
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Disconnect</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
   }
 
   return (
@@ -44,20 +59,20 @@ export function WalletConnect() {
       onClick={handleConnect}
       disabled={isConnecting}
       variant="default"
-      size="sm"
-      className="flex items-center gap-2"
+      size="default"
+      className="flex items-center gap-2 px-3 btn-glow"
     >
       {isConnecting ? (
         <>
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-xs">Connecting...</span>
+          <span className="text-sm font-gapsans">Connecting...</span>
         </>
       ) : (
         <>
           <Wallet className="h-4 w-4" />
-          <span className="text-xs">Connect Midnight</span>
+          <span className="text-sm font-gapsans">Connect Midnight</span>
         </>
       )}
     </Button>
-  )
+  );
 }

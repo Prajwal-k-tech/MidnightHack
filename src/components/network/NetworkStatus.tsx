@@ -1,25 +1,35 @@
-'use client'
+'use client';
 
-import { Badge } from '@/components/ui/badge'
-import { useWalletStore } from '@/lib/stores/walletStore'
-import { Wifi, WifiOff } from 'lucide-react'
+import { useWalletStore } from '@/lib/stores/walletStore';
+import { Wifi, WifiOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export function NetworkStatus() {
-  const { isConnected } = useWalletStore()
+  const { isConnected } = useWalletStore();
+
+  const baseClasses = "flex items-center gap-2 px-3 cursor-default border border-input bg-transparent transition-colors hover:bg-black/5 dark:hover:bg-white/5";
 
   if (!isConnected) {
     return (
-      <div className="flex items-center gap-2">
-        <WifiOff className="h-4 w-4 text-muted-foreground" />
-        <Badge variant="secondary">Offline</Badge>
-      </div>
-    )
+      <Button
+        size="default"
+        className={baseClasses}
+        aria-label="Wallet is offline"
+      >
+        <WifiOff className="h-4 w-4 text-destructive dark:text-red-400" />
+        <span className="text-sm font-medium text-destructive dark:text-red-400">Offline</span>
+      </Button>
+    );
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Wifi className="h-4 w-4 text-green-500" />
-      <Badge variant="success">Midnight</Badge>
-    </div>
-  )
+    <Button
+      size="default"
+      className={baseClasses}
+      aria-label="Wallet is connected to Midnight"
+    >
+      <Wifi className="h-4 w-4 text-primary" />
+      <span className="text-sm font-medium text-primary">Midnight</span>
+    </Button>
+  );
 }

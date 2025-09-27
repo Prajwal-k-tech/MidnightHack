@@ -17,15 +17,18 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'],
+        heading: ['Telma', 'sans-serif'],
+        gapsans: ['Gapsans', 'sans-serif'],
       },
       colors: {
-        // Official Midnight Brand Colors
-        midnight: {
-          black: '#0A0A0A',
-          white: '#FFFFFF',
-          blue: '#0000FE',
-        },
+        // Custom Palette
+        'primary-dark': '#014c8f',
+        'secondary-dark': '#5768d2',
+        'accent-dark': '#9992e0',
+        'primary-light': '#ca9ae4',
+        'secondary-light': '#eb9ced',
+        'accent-light': '#ff9df0',
+
         // UI colors
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
