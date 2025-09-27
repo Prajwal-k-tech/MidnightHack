@@ -1,0 +1,76 @@
+pragma language_version 0.16;
+
+import CompactStandardLibrary;
+
+// User status for account management
+enum UserStatus {
+    Active,
+    Suspended,
+    Banned
+}
+
+// Ledger state for the dating platform
+export ledger total_users: Uint<64>;
+export ledger nonce: Counter;
+
+// Track users and their statuses
+export ledger user_statuses: Map<Uint<32>, UserStatus>;
+
+// Store commitments to user profile data (actual data kept off-chain)
+export ledger profile_hashes: Map<Uint<32>, Bytes<32>>;
+
+// Store commitments to user preferences (actual preferences kept off-chain)
+export ledger preference_hashes: Map<Uint<32>, Bytes<32>>;
+
+// Constructor to initialize the platform
+constructor() {
+    total_users = 0;
+}
+
+// Circuit to create a new user profile
+export circuit create_profile(
+    user_id: Uint<32>,
+    profile_commitment: Bytes<32>
+): [] {
+    // Prevent duplicate user IDs (sybil resistance)
+    assert(!user_statuses.member(disclose(user_id)), "User ID already exists");
+
+    // Store user status and profile commitment
+    user_statuses.insert(disclose(user_id), UserStatus.Active);
+    profile_hashes.insert(disclose(user_id), disclose(profile_commitment));
+
+    // Update total users count
+    total_users = (total_users + 1) as Uint<64>;
+
+    // Increment nonce for state tracking
+    nonce.increment(1);
+}
+
+// Circuit to update user preferences
+export circuit update_preferences(
+    user_id: Uint<32>,
+    preference_commitment: Bytes<32>
+): [] {
+    // Verify user exists and is active
+    assert(user_statuses.member(disclose(user_id)), "User does not exist");
+    assert(user_statuses.lookup(disclose(user_id)) == UserStatus.Active, "User is not active");
+
+    // Update preference commitment
+    preference_hashes.insert(disclose(user_id), disclose(preference_commitment));
+
+    // Increment nonce for state tracking
+    nonce.increment(1);
+}
+
+// Circuit to suspend a user account
+export circuit suspend_user(user_id: Uint<32>): [] {
+    // Verify user exists and is active
+    assert(user_statuses.member(disclose(user_id)), "User does not exist");
+    assert(user_statuses.lookup(disclose(user_id)) == UserStatus.Active, "User is not active");
+
+    // Change user status to suspended
+    user_statuses.insert(disclose(user_id), UserStatus.Suspended);
+
+    // Increment nonce for state tracking
+    nonce.increment(1);
+}
