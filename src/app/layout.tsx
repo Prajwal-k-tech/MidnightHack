@@ -6,7 +6,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'dApp Dating | Midnight',
+  title: 'dApp | Midnight',
   description: 'A privacy-first dating platform on the Midnight blockchain',
   keywords: ['Midnight', 'Compact', 'Privacy', 'Smart Contracts', 'Blockchain', 'DApp', 'Dating'],
   authors: [{ name: 'Your Name' }],

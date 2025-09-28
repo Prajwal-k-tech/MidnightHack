@@ -1,0 +1,148 @@
+import CompactStandardLibrary;
+
+// ============================================================================
+//  Type Definitions
+// ============================================================================
+
+// Structure to hold a user's private profile data commitments.
+// We store hashes of the data, not the data itself.
+// The circuit will receive the raw data via witnesses and verify it against these hashes.
+struct UserProfile {
+  // Opaque hash of the user's age.
+  ageHash: Bytes<32>,
+  // Opaque hash of the user's location data.
+  locationHash: Bytes<32>,
+  // Opaque hash of the user's bio.
+  bioHash: Bytes<32>
+}
+
+// ============================================================================
+//  Ledger State
+// ============================================================================
+
+// Maps a user's address to their encrypted/committed profile.
+export sealed ledger profiles: Map<Address, UserProfile>;
+
+// Maps a user's address to a list of addresses who have requested a match.
+// For this proof-of-concept, we'll limit the number of pending requests per user.
+export ledger matchRequests: Map<Address, Vector<8, Address>>;
+
+
+// ============================================================================
+//  Witness Declarations
+// ============================================================================
+
+// Witness to get the caller's private profile data for registration.
+// Returns: [age, location, bio]
+witness getMyPrivateProfileForRegistration(): [Uint<8>, Bytes<32>, Bytes<256>];
+
+// Witness to get the caller's and target's private data for matching logic.
+// This is a complex step. For the PoC, the witness implementation will need
+// a way to access both users' data securely off-chain.
+// Returns: [myAge, myLocation, targetAge, targetLocation]
+witness getMatchData(target: Address): [Uint<8>, Bytes<32>, Uint<8>, Bytes<32>];
+
+
+// ============================================================================
+//  Constructor
+// ============================================================================
+
+constructor() {
+  // The constructor is called once when the contract is deployed.
+  // We can use it to initialize any state if needed, but for Maps,
+  // they are implicitly initialized.
+}
+
+
+// ============================================================================
+//  Exported Circuits (Entry Points)
+// ============================================================================
+
+// Registers a new user profile on the ledger.
+export circuit register(): [] {
+  // Get the user's private data from the off-chain witness.
+  const [age, location, bio] = getMyPrivateProfileForRegistration();
+  const sender = kernel.getSender();
+
+  // Ensure this user is not already registered.
+  assert(!profiles.has(sender), "User is already registered.");
+
+  // Create hashes of the private data. These hashes are the commitments
+  // that will be stored publicly on the ledger.
+  const profile = UserProfile {
+    ageHash: sha256(age as Bytes<1>),
+    locationHash: sha256(location),
+    bioHash: sha256(bio)
+  };
+
+  // Insert the new profile into the public ledger, associated with the sender's address.
+  profiles.insert(sender, profile);
+}
+
+// Allows the sender to request a match with another user.
+export circuit requestMatch(target: Address): [] {
+  const sender = kernel.getSender();
+
+  // Ensure both sender and target are registered users.
+  assert(profiles.has(sender), "Sender is not a registered user.");
+  assert(profiles.has(target), "Target is not a registered user.");
+  assert(sender != target, "User cannot match with themselves.");
+
+  // Get private data for both users to check matching rules.
+  const [myAge, myLocation, targetAge, targetLocation] = getMatchData(target);
+
+  // --- Zero-Knowledge Logic ---
+  // The circuit enforces matching rules privately.
+  // The proof of this execution confirms the rules were met without revealing the data.
+
+  // Rule 1: Location must be the same.
+  assert(myLocation == targetLocation, "Matching rule failed: Location mismatch.");
+
+  // Rule 2: Age difference must be less than or equal to 10 years.
+  const ageDiff = myAge > targetAge ? myAge - targetAge : targetAge - myAge;
+  assert(ageDiff <= 10, "Matching rule failed: Age difference too large.");
+
+  // If all assertions pass, the request is valid.
+  // Add the sender to the target's list of match requests.
+  let requests = matchRequests.has(target) ? matchRequests.lookup(target) : default<Vector<8, Address>>;
+
+  // Find an empty slot to add the new request.
+  let newRequests = requests;
+  let inserted = false;
+  for (let i = 0; i < 8; i = i + 1) {
+    if (!inserted && requests[i] == default<Address>) {
+      newRequests[i] = sender;
+      inserted = true;
+    }
+  }
+
+  assert(inserted, "Target's request list is full.");
+  matchRequests.insert(target, newRequests);
+}
+
+// Allows a user to approve a match request from a requester.
+export circuit approveMatch(requester: Address): [] {
+  const sender = kernel.getSender();
+
+  // Verify that `requester` is in `sender`'s `matchRequests` list.
+  let requests = matchRequests.lookup(sender);
+  let found = false;
+  let newRequests = requests;
+  for (let i = 0; i < 8; i = i + 1) {
+    if (requests[i] == requester) {
+      newRequests[i] = default<Address>; // Remove the request
+      found = true;
+    }
+  }
+  assert(found, "Requester not found in match requests.");
+
+  // Update the request list.
+  matchRequests.insert(sender, newRequests);
+
+  // TODO:
+  // 1. Emit an event or update state to signify the match.
+  //    This is where the private data (e.g., bios) would be exchanged,
+  //    likely through a shared secret derived from this transaction.
+  //    For the hackathon, we can simulate this on the client-side after
+  //    this transaction is confirmed.
+}

@@ -1,0 +1,168 @@
+pragma language_version >= 0.17.0;
+import CompactStandardLibrary;
+
+// Privacy-First Dating Platform - CORRECTED VERSION
+// Uses proper witness functions and commitment schemes
+
+// === WITNESS FUNCTIONS (Private data from DApp) ===
+witness getUserAge(): Uint<8>;
+witness getBiometricHash(): Bytes<32>; 
+witness getUserCoordinates(): [Uint<16>, Uint<16>];
+witness getRandomNonce(): Bytes<32>;
+
+// === LEDGER STATE (Public commitments only) ===
+export ledger identity_commitments: Map<Uint<32>, Bytes<32>>;
+export ledger age_range_proofs: Map<Uint<32>, Uint<8>>;  // Only ranges, not exact ages
+export ledger location_zone_commitments: Map<Uint<32>, Bytes<32>>;
+export ledger verified_users: Set<Uint<32>>;
+
+// === HELPER CIRCUITS ===
+
+// Convert exact age to privacy-preserving range
+circuit calculate_age_range(age: Uint<8>): Uint<8> {
+    return age >= 18 && age <= 25 ? 1 :
+           age >= 26 && age <= 35 ? 2 :
+           age >= 36 && age <= 45 ? 3 :
+           age >= 46 && age <= 55 ? 4 :
+           age >= 56 ? 5 : 0;
+}
+
+// Create location zone from coordinates (privacy-preserving)
+circuit calculate_location_zone(coords: [Uint<16>, Uint<16>]): Uint<16> {
+    // Divide coordinates into larger zones to preserve privacy
+    const zone_x = coords[0] / 100;  // ~10km zones
+    const zone_y = coords[1] / 100;
+    return zone_x * 1000 + zone_y;  // Unique zone identifier
+}
+
+// === MAIN VERIFICATION CIRCUITS ===
+
+// Step 1: Private Identity Verification
+export circuit verify_identity(user_id: Uint<32>): [] {
+    // Get private biometric data from witness (never disclosed)
+    const biometric_data = getBiometricHash();
+    const nonce = getRandomNonce();
+    
+    // Create identity commitment (protects the biometric data)
+    const identity_commitment = persistentCommit<Bytes<32>>(biometric_data, nonce);
+    
+    // Store only the commitment, never the raw biometric data
+    identity_commitments.insert(user_id, identity_commitment);
+    
+    // Add to verified users set
+    verified_users.insert(user_id);
+}
+
+// Step 2: Private Age Verification  
+export circuit verify_age(user_id: Uint<32>): [] {
+    // Ensure user is already identity-verified
+    const is_verified = verified_users.member(user_id);
+    assert(is_verified, "User must complete identity verification first");
+    
+    // Get private age from witness (never disclosed)
+    const exact_age = getUserAge();
+    
+    // Calculate privacy-preserving age range
+    const age_range = calculate_age_range(exact_age);
+    
+    // Verify user is adult
+    const is_adult = exact_age >= 18;
+    assert(is_adult, "User must be 18 or older");
+    
+    // Store only the age range, never exact age
+    // This is derived from witness data, so we disclose the range
+    age_range_proofs.insert(user_id, disclose(age_range));
+}
+
+// Step 3: Private Location Verification
+export circuit verify_location(user_id: Uint<32>): [] {
+    // Ensure user is verified
+    const is_verified = verified_users.member(user_id);
+    assert(is_verified, "User must complete identity verification first");
+    
+    // Get private coordinates from witness (never disclosed)
+    const coordinates = getUserCoordinates();
+    const nonce = getRandomNonce();
+    
+    // Calculate privacy zone (much larger than exact location)
+    const location_zone = calculate_location_zone(coordinates);
+    
+    // Create commitment to the location zone
+    const zone_commitment = persistentCommit<Uint<16>>(location_zone, nonce);
+    
+    // Store only the zone commitment, never coordinates
+    location_zone_commitments.insert(user_id, zone_commitment);
+}
+
+// === COMPATIBILITY CIRCUITS ===
+
+// Check age compatibility (uses only disclosed ranges)
+export circuit check_age_compatibility(user1: Uint<32>, user2: Uint<32>): Boolean {
+    // Get age ranges (these were already disclosed)
+    const range1 = age_range_proofs.lookup(user1);
+    const range2 = age_range_proofs.lookup(user2);
+    
+    // Check both users have verified ages
+    const both_verified = range1 > 0 && range2 > 0;
+    
+    // Calculate compatibility (allow max 1 range difference)
+    const range_diff = range1 > range2 ? range1 - range2 : range2 - range1;
+    const age_compatible = range_diff <= 1;
+    
+    return both_verified && age_compatible;
+}
+
+// Check if users are in proximity (without revealing exact locations)
+export circuit check_location_proximity(user1: Uint<32>, user2: Uint<32>): Boolean {
+    // This would require more complex ZK proof to compare commitments
+    // For now, we check if both users have location commitments
+    const has_location1 = location_zone_commitments.member(user1);
+    const has_location2 = location_zone_commitments.member(user2);
+    
+    // In a full implementation, we'd use ZK proofs to compare 
+    // zone commitments without revealing the actual zones
+    return has_location1 && has_location2;
+}
+
+// Complete compatibility check
+export circuit calculate_compatibility(user1: Uint<32>, user2: Uint<32>): Uint<8> {
+    // Check all verification requirements
+    const user1_verified = verified_users.member(user1);
+    const user2_verified = verified_users.member(user2);
+    const age_match = check_age_compatibility(user1, user2);
+    const location_ok = check_location_proximity(user1, user2);
+    
+    // Calculate compatibility score
+    const base_score = user1_verified && user2_verified ? 50 : 0;
+    const age_bonus = age_match ? 30 : 0;
+    const location_bonus = location_ok ? 20 : 0;
+    
+    return base_score + age_bonus + location_bonus;
+}
+
+// === DEMO CIRCUIT ===
+export circuit demo_private_dating(): [] {
+    // This circuit demonstrates the privacy-preserving flow
+    const demo_user1 = 1001;
+    const demo_user2 = 1002;
+    
+    // Note: In real usage, these would be called separately by users
+    // Here we demo the complete flow for presentation
+    
+    // Each user completes private verification
+    verify_identity(demo_user1);
+    verify_age(demo_user1);
+    verify_location(demo_user1);
+    
+    verify_identity(demo_user2);
+    verify_age(demo_user2);  
+    verify_location(demo_user2);
+    
+    // Calculate compatibility without revealing private data
+    const compatibility = calculate_compatibility(demo_user1, demo_user2);
+    
+    // The result shows compatibility without exposing:
+    // - Exact ages (only ranges)
+    // - Biometric data (only commitments)
+    // - Exact locations (only zone commitments)
+}

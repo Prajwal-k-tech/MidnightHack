@@ -1,0 +1,158 @@
+pragma language_version >= 0.17.0;
+import CompactStandardLibrary;
+
+// Unified Zero-Knowledge Dating Platform
+// Combines identity verification, age verification, and location proximity
+
+// Ledgers for different verification types
+export ledger verified_identities: Map<Uint<32>, Boolean>;
+export ledger identity_hashes: Map<Uint<32>, Bytes<32>>;
+export ledger age_verifications: Map<Uint<32>, Uint<8>>;  // Age ranges: 1=18-25, 2=26-35, etc.
+export ledger location_verifications: Map<Uint<32>, Boolean>;
+export ledger compatibility_scores: Map<Uint<32>, Uint<8>>;  // Composite compatibility (0-100)
+
+// === IDENTITY VERIFICATION ===
+circuit generate_identity_hash(biometric_data: Bytes<32>, salt: Bytes<32>): Bytes<32> {
+    return persistentHash<Vector<3, Bytes<32>>>([
+        pad(32, "identity:"), 
+        biometric_data, 
+        salt
+    ]);
+}
+
+circuit verify_unique_identity(identity_hash: Bytes<32>): Boolean {
+    const zero_hash = pad(32, "");
+    return identity_hash != zero_hash;
+}
+
+// === AGE VERIFICATION ===
+circuit get_age_range(age: Uint<8>): Uint<8> {
+    const range = age >= 18 && age <= 25 ? 1 :
+                  age >= 26 && age <= 35 ? 2 :
+                  age >= 36 && age <= 45 ? 3 :
+                  age >= 46 && age <= 55 ? 4 :
+                  age >= 56 ? 5 : 0;
+    return range as Uint<8>;
+}
+
+circuit verify_minimum_age(age: Uint<8>, minimum_age: Uint<8>): Boolean {
+    return age >= minimum_age;
+}
+
+// === LOCATION VERIFICATION ===
+circuit check_coordinate_overlap(
+    coord1_min: Uint<16>, coord1_max: Uint<16>,
+    coord2_min: Uint<16>, coord2_max: Uint<16>
+): Boolean {
+    const overlap1 = coord1_min <= coord2_max;
+    const overlap2 = coord2_min <= coord1_max;
+    return overlap1 && overlap2;
+}
+
+circuit verify_location_overlap(
+    x1_min: Uint<16>, x1_max: Uint<16>, y1_min: Uint<16>, y1_max: Uint<16>,
+    x2_min: Uint<16>, x2_max: Uint<16>, y2_min: Uint<16>, y2_max: Uint<16>
+): Boolean {
+    const x_overlap = check_coordinate_overlap(x1_min, x1_max, x2_min, x2_max);
+    const y_overlap = check_coordinate_overlap(y1_min, y1_max, y2_min, y2_max);
+    return x_overlap && y_overlap;
+}
+
+// === COMPATIBILITY SCORING ===
+circuit calculate_compatibility_score(age_range1: Uint<8>, age_range2: Uint<8>, location_compatible: Boolean): Uint<8> {
+    // Age compatibility (closer ranges = higher score)
+    const age_diff = age_range1 > age_range2 ? age_range1 - age_range2 : age_range2 - age_range1;
+    const age_score = age_diff == 0 ? 50 :    // Same range = 50 points
+                      age_diff == 1 ? 35 :    // Adjacent range = 35 points  
+                      age_diff == 2 ? 20 : 10; // 2+ ranges apart = 10-20 points
+    
+    // Location compatibility bonus
+    const location_score = location_compatible ? 40 : 0;
+    
+    const total_score = age_score + location_score;
+    return total_score > 100 ? 100 : total_score as Uint<8>;
+}
+
+// === WITNESS FUNCTIONS ===
+witness getBiometricData(): Bytes<32>;
+witness getIdentitySalt(): Bytes<32>;
+witness getUserAge(): Uint<8>;
+witness getUserLocationRange(): [Uint<16>, Uint<16>, Uint<16>, Uint<16>]; // [x_min, x_max, y_min, y_max]
+
+// === MAIN VERIFICATION CIRCUITS ===
+
+// Complete user verification (identity + age + location)
+export circuit complete_user_verification(user_id: Uint<32>): [] {
+    // Identity verification
+    const biometric_data = getBiometricData();
+    const salt = getIdentitySalt();
+    const identity_hash = generate_identity_hash(biometric_data, salt);
+    const is_unique = verify_unique_identity(identity_hash);
+    
+    // Age verification  
+    const user_age = getUserAge();
+    const is_adult = verify_minimum_age(user_age, 18);
+    const age_range = is_adult ? get_age_range(user_age) : 0;
+    
+    // Store all verification results
+    verified_identities.insert(disclose(user_id), disclose(is_unique && is_adult));
+    identity_hashes.insert(disclose(user_id), disclose(identity_hash));
+    age_verifications.insert(disclose(user_id), disclose(age_range));
+}
+
+// Check compatibility between two verified users
+export circuit check_user_compatibility(user1_id: Uint<32>, user2_id: Uint<32>): [] {
+    // Get stored verification data
+    const user1_verified = verified_identities.lookup(disclose(user1_id));
+    const user2_verified = verified_identities.lookup(disclose(user2_id));
+    const age_range1 = age_verifications.lookup(disclose(user1_id));
+    const age_range2 = age_verifications.lookup(disclose(user2_id));
+    
+    // Check if both users are verified
+    const both_verified = user1_verified && user2_verified;
+    
+    // For location compatibility, we'd need both users' location ranges
+    // For demo, assume location is compatible if both are verified
+    const location_compatible = both_verified;
+    
+    // Calculate compatibility score
+    const compatibility = both_verified ? 
+        calculate_compatibility_score(age_range1, age_range2, location_compatible) : 0;
+    
+    // Store compatibility score for this pair
+    const pair_key = (user1_id < user2_id ? user1_id + user2_id : user2_id + user1_id) as Uint<32>;
+    compatibility_scores.insert(disclose(pair_key), disclose(compatibility));
+}
+
+// Test circuit demonstrating the complete flow
+export circuit test_dating_platform(): [] {
+    // Test data for two users
+    const user1_id = 1001;
+    const user2_id = 1002;
+    
+    // Simulate identity verification
+    const test_biometric1 = pad(32, "user1_face_encoding");
+    const test_salt1 = pad(32, "salt1_abc123");
+    const identity1 = generate_identity_hash(test_biometric1, test_salt1);
+    
+    const test_biometric2 = pad(32, "user2_face_encoding");
+    const test_salt2 = pad(32, "salt2_def456");
+    const identity2 = generate_identity_hash(test_biometric2, test_salt2);
+    
+    // Simulate age verification
+    const age_range1 = get_age_range(25); // Should be range 1 (18-25)
+    const age_range2 = get_age_range(30); // Should be range 2 (26-35)
+    
+    // Store verification results
+    verified_identities.insert(disclose(user1_id), disclose(true));
+    verified_identities.insert(disclose(user2_id), disclose(true));
+    identity_hashes.insert(disclose(user1_id), disclose(identity1));
+    identity_hashes.insert(disclose(user2_id), disclose(identity2));
+    age_verifications.insert(disclose(user1_id), disclose(age_range1));
+    age_verifications.insert(disclose(user2_id), disclose(age_range2));
+    
+    // Calculate compatibility
+    const compatibility = calculate_compatibility_score(age_range1, age_range2, true);
+    const pair_key = (user1_id + user2_id) as Uint<32>;
+    compatibility_scores.insert(disclose(pair_key), disclose(compatibility));
+}

@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { WalletConnect } from '@/components/wallet/WalletConnect';
 import { NetworkStatus } from '@/components/network/NetworkStatus';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
-import { ContractInterface } from '@/components/contract/ContractInterface';
+
 import { useWalletStore } from '@/lib/stores/walletStore';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { XCircle } from 'lucide-react';
+import { XCircle, Shield, Search, Sparkles, Zap, Target, Lock } from 'lucide-react';
+import { MainDashboard } from '@/components/MainDashboard';
 import BlurInText from '@/components/ui/BlurInText';
 import { ScrollingText } from '@/components/ui/ScrollingText';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,7 +37,7 @@ export default function Home() {
       
       <header className="w-full max-w-6xl flex-shrink-0 flex justify-between items-center p-6 relative z-10">
         <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-violet-400 to-purple-300 bg-clip-text text-transparent leading-normal">
-          dApp Dating
+          dApp
         </h1>
         <div className="flex items-center space-x-3">
           <NetworkStatus />
@@ -70,15 +71,15 @@ export default function Home() {
             {/* Value Props */}
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-emerald-300">
-                <span className="text-xl">🛡️</span>
+                <Shield className="w-5 h-5" />
                 <span className="text-sm font-medium">Your data stays on your device</span>
               </div>
               <div className="flex items-center gap-3 text-blue-300">
-                <span className="text-xl">🔍</span>
+                <Search className="w-5 h-5" />
                 <span className="text-sm font-medium">Cryptographically verified compatibility</span>
               </div>
               <div className="flex items-center gap-3 text-purple-300">
-                <span className="text-xl">💎</span>
+                <Sparkles className="w-5 h-5" />
                 <span className="text-sm font-medium">Serious connections, verified profiles</span>
               </div>
             </div>
@@ -90,7 +91,7 @@ export default function Home() {
               </p>
               {!isConnected && (
                 <div className="bg-gradient-to-r from-violet-500/20 to-purple-500/20 backdrop-blur-sm border border-violet-400/30 rounded-xl p-4">
-                  <p className="text-violet-200 text-sm mb-2">🚀 Connect your Midnight wallet to start</p>
+                  <p className="text-violet-200 text-sm mb-2 flex items-center gap-2"><Zap className="w-4 h-4" /> Connect your Midnight wallet to start</p>
                   <p className="text-slate-400 text-xs">Your journey to verified, private dating begins here</p>
                 </div>
               )}
@@ -117,8 +118,12 @@ export default function Home() {
           </div>
 
           <div className="w-full">
-            {/* After onboarding, this could show a dashboard or the main app view */}
-            <ContractInterface />
+            {/* Main app dashboard after wallet connection and onboarding */}
+            {isConnected && hasCompletedOnboarding && (
+              <div className="w-full">
+                <MainDashboard />
+              </div>
+            )}
           </div>
         </motion.div>
 
@@ -130,17 +135,17 @@ export default function Home() {
           className="w-full mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10"
         >
           <div className="text-center space-y-3 p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-            <div className="text-4xl mb-3">🎯</div>
+            <Target className="w-12 h-12 mx-auto mb-3 text-violet-400" />
             <h3 className="text-xl font-bold text-violet-300">Smart Matching</h3>
             <p className="text-sm text-slate-400">Match based on verified compatibility, not just photos and lies</p>
           </div>
           <div className="text-center space-y-3 p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-            <div className="text-4xl mb-3">🔐</div>
+            <Lock className="w-12 h-12 mx-auto mb-3 text-violet-400" />
             <h3 className="text-xl font-bold text-violet-300">Zero-Knowledge Proofs</h3>
             <p className="text-sm text-slate-400">Prove you're compatible without revealing sensitive data</p>
           </div>
           <div className="text-center space-y-3 p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-            <div className="text-4xl mb-3">⚡</div>
+            <Zap className="w-12 h-12 mx-auto mb-3 text-violet-400" />
             <h3 className="text-xl font-bold text-violet-300">Midnight Network</h3>
             <p className="text-sm text-slate-400">Built on cutting-edge privacy blockchain technology</p>
           </div>

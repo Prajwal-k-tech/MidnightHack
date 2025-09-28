@@ -1,87 +1,11 @@
 {
   "circuits": [
     {
-      "name": "create_verified_profile",
+      "name": "complete_user_verification",
       "pure": false,
       "arguments": [
         {
           "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        },
-        {
-          "name": "profile_commitment",
-          "type": {
-            "type-name": "Bytes",
-            "length": 32
-          }
-        }
-      ],
-      "result-type": {
-        "type-name": "Boolean"
-      }
-    },
-    {
-      "name": "verify_and_disclose_age_range",
-      "pure": false,
-      "arguments": [
-        {
-          "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        },
-        {
-          "name": "min_age",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 255
-          }
-        },
-        {
-          "name": "max_age",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 255
-          }
-        }
-      ],
-      "result-type": {
-        "type-name": "Tuple",
-        "types": [
-        ]
-      }
-    },
-    {
-      "name": "verify_and_disclose_location_proximity",
-      "pure": false,
-      "arguments": [
-        {
-          "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        },
-        {
-          "name": "target_lat",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        },
-        {
-          "name": "target_lng",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        },
-        {
-          "name": "max_distance",
           "type": {
             "type-name": "Uint",
             "maxval": 4294967295
@@ -95,39 +19,7 @@
       }
     },
     {
-      "name": "verify_and_disclose_income_bracket",
-      "pure": false,
-      "arguments": [
-        {
-          "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        },
-        {
-          "name": "min_income",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 18446744073709551615
-          }
-        },
-        {
-          "name": "max_income",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 18446744073709551615
-          }
-        }
-      ],
-      "result-type": {
-        "type-name": "Tuple",
-        "types": [
-        ]
-      }
-    },
-    {
-      "name": "create_verified_match",
+      "name": "check_user_compatibility",
       "pure": false,
       "arguments": [
         {
@@ -146,116 +38,49 @@
         }
       ],
       "result-type": {
-        "type-name": "Boolean"
+        "type-name": "Tuple",
+        "types": [
+        ]
       }
     },
     {
-      "name": "check_verified_match",
+      "name": "test_dating_platform",
       "pure": false,
       "arguments": [
-        {
-          "name": "user1_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        },
-        {
-          "name": "user2_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        }
-      ],
-      "result-type": {
-        "type-name": "Boolean"
-      }
-    },
-    {
-      "name": "get_verification_status",
-      "pure": false,
-      "arguments": [
-        {
-          "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        }
       ],
       "result-type": {
         "type-name": "Tuple",
         "types": [
-          {
-            "type-name": "Boolean"
-          },
-          {
-            "type-name": "Boolean"
-          },
-          {
-            "type-name": "Boolean"
-          }
         ]
       }
     }
   ],
   "witnesses": [
     {
+      "name": "getBiometricData",
+      "arguments": [
+      ],
+      "result type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "getIdentitySalt",
+      "arguments": [
+      ],
+      "result type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
       "name": "getUserAge",
       "arguments": [
-        {
-          "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        }
       ],
       "result type": {
         "type-name": "Uint",
         "maxval": 255
-      }
-    },
-    {
-      "name": "getUserLocation",
-      "arguments": [
-        {
-          "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        }
-      ],
-      "result type": {
-        "type-name": "Tuple",
-        "types": [
-          {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          },
-          {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        ]
-      }
-    },
-    {
-      "name": "getUserIncome",
-      "arguments": [
-        {
-          "name": "user_id",
-          "type": {
-            "type-name": "Uint",
-            "maxval": 4294967295
-          }
-        }
-      ],
-      "result type": {
-        "type-name": "Uint",
-        "maxval": 18446744073709551615
       }
     }
   ],

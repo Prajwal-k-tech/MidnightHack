@@ -1,0 +1,43 @@
+{
+  "name": "private-dating-platform-contract",
+  "version": "1.0.0",
+  "description": "Midnight smart contract for private dating platform",
+  "main": "build/index.js",
+  "scripts": {
+    "setup": "ts-node cli.ts setup",
+    "compile": "echo 'Contract compilation requires Midnight SDK'",
+    "start": "ts-node cli.ts start", 
+    "stop": "ts-node cli.ts stop",
+    "deploy": "ts-node cli.ts deploy",
+    "status": "ts-node cli.ts status",
+    "logs": "ts-node cli.ts logs",
+    "register": "ts-node cli.ts register",
+    "match": "ts-node cli.ts match",
+    "approve": "ts-node cli.ts approve",
+    "demo": "ts-node test-scripts/demo-script.ts",
+    "demo:full": "ts-node test-scripts/comprehensive-demo.ts",
+    "build": "tsc",
+    "test": "ts-node test-scripts/run-tests.ts"
+  },
+  "keywords": [
+    "midnight",
+    "blockchain",
+    "zero-knowledge",
+    "privacy",
+    "dating",
+    "compact"
+  ],
+  "author": "MidnightHack Team",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "commander": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.20",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

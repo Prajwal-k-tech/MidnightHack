@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Midnight Node - the core blockchain node
+  midnight-node:
+    image: ghcr.io/midnight-ntwrk/midnight-node:latest
+    container_name: midnight-node
+    ports:
+      - "3001:3001"  # Node API port
+    environment:
+      - CARDANO_NETWORK=testnet
+      - MIDNIGHT_LOG_LEVEL=info
+    volumes:
+      - midnight-node-data:/data
+    networks:
+      - midnight-net
+    restart: unless-stopped
+
+  # Indexer - tracks blockchain state for efficient queries
+  midnight-indexer:
+    image: ghcr.io/midnight-ntwrk/midnight-indexer:latest
+    container_name: midnight-indexer
+    ports:
+      - "3002:3002"  # Indexer API port
+    environment:
+      - MIDNIGHT_NODE_URL=http://midnight-node:3001
+      - MIDNIGHT_LOG_LEVEL=info
+    depends_on:
+      - midnight-node
+    volumes:
+      - midnight-indexer-data:/data
+    networks:
+      - midnight-net
+    restart: unless-stopped
+
+  # Proof Server - generates ZK proofs locally
+  proof-server:
+    image: ghcr.io/midnight-ntwrk/proof-server:latest
+    container_name: proof-server
+    ports:
+      - "3003:3003"  # Proof server port
+    environment:
+      - MIDNIGHT_LOG_LEVEL=info
+      - PROOF_SERVER_PORT=3003
+    volumes:
+      - proof-server-data:/data
+      - ./build:/app/circuits  # Mount compiled circuits
+    networks:
+      - midnight-net
+    restart: unless-stopped
+
+  # PostgreSQL database for the indexer
+  postgres:
+    image: postgres:14
+    container_name: midnight-postgres
+    environment:
+      - POSTGRES_DB=midnight
+      - POSTGRES_USER=midnight
+      - POSTGRES_PASSWORD=midnight123
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - midnight-net
+    restart: unless-stopped
+
+volumes:
+  midnight-node-data:
+  midnight-indexer-data:
+  proof-server-data:
+  postgres-data:
+
+networks:
+  midnight-net:
+    driver: bridge

@@ -15,72 +15,33 @@ if (expectedRuntimeVersion[0] != actualRuntimeVersion[0]
 
 const _descriptor_0 = new __compactRuntime.CompactTypeUnsignedInteger(4294967295n, 4);
 
-const _descriptor_1 = new __compactRuntime.CompactTypeEnum(2, 1);
+const _descriptor_1 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
 
 const _descriptor_2 = new __compactRuntime.CompactTypeBoolean();
 
-class _tuple_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_0.alignment());
-  }
-  fromValue(value_0) {
-    return [
-      _descriptor_0.fromValue(value_0),
-      _descriptor_0.fromValue(value_0)
-    ]
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0[0]).concat(_descriptor_0.toValue(value_0[1]));
-  }
-}
+const _descriptor_3 = new __compactRuntime.CompactTypeBytes(32);
 
-const _descriptor_3 = new _tuple_0();
+const _descriptor_4 = new __compactRuntime.CompactTypeVector(3, _descriptor_3);
 
-const _descriptor_4 = new __compactRuntime.CompactTypeEnum(1, 1);
-
-class _tuple_1 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()));
-  }
-  fromValue(value_0) {
-    return [
-      _descriptor_2.fromValue(value_0),
-      _descriptor_2.fromValue(value_0),
-      _descriptor_2.fromValue(value_0)
-    ]
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0[0]).concat(_descriptor_2.toValue(value_0[1]).concat(_descriptor_2.toValue(value_0[2])));
-  }
-}
-
-const _descriptor_5 = new _tuple_1();
-
-const _descriptor_6 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
-
-const _descriptor_7 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
-
-const _descriptor_8 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
-
-const _descriptor_9 = new __compactRuntime.CompactTypeBytes(32);
+const _descriptor_5 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
 
 class _ContractAddress_0 {
   alignment() {
-    return _descriptor_9.alignment();
+    return _descriptor_3.alignment();
   }
   fromValue(value_0) {
     return {
-      bytes: _descriptor_9.fromValue(value_0)
+      bytes: _descriptor_3.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.bytes);
+    return _descriptor_3.toValue(value_0.bytes);
   }
 }
 
-const _descriptor_10 = new _ContractAddress_0();
+const _descriptor_6 = new _ContractAddress_0();
 
-const _descriptor_11 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
+const _descriptor_7 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
 
 class Contract {
   witnesses;
@@ -92,340 +53,34 @@ class Contract {
     if (typeof(witnesses_0) !== 'object') {
       throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor is not an object');
     }
+    if (typeof(witnesses_0.getBiometricData) !== 'function') {
+      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named getBiometricData');
+    }
+    if (typeof(witnesses_0.getIdentitySalt) !== 'function') {
+      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named getIdentitySalt');
+    }
     if (typeof(witnesses_0.getUserAge) !== 'function') {
       throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named getUserAge');
     }
-    if (typeof(witnesses_0.getUserLocation) !== 'function') {
-      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named getUserLocation');
-    }
-    if (typeof(witnesses_0.getUserIncome) !== 'function') {
-      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named getUserIncome');
-    }
     this.witnesses = witnesses_0;
     this.circuits = {
-      create_verified_profile: (...args_1) => {
-        if (args_1.length !== 3) {
-          throw new __compactRuntime.CompactError(`create_verified_profile: expected 3 arguments (as invoked from Typescript), received ${args_1.length}`);
-        }
-        const contextOrig_0 = args_1[0];
-        const user_id_0 = args_1[1];
-        const profile_commitment_0 = args_1[2];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
-          __compactRuntime.type_error('create_verified_profile',
-                                      'argument 1 (as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 53 char 1',
-                                      'CircuitContext',
-                                      contextOrig_0)
-        }
-        if (!(typeof(user_id_0) === 'bigint' && user_id_0 >= 0n && user_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('create_verified_profile',
-                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 53 char 1',
-                                      'Uint<0..4294967295>',
-                                      user_id_0)
-        }
-        if (!(profile_commitment_0.buffer instanceof ArrayBuffer && profile_commitment_0.BYTES_PER_ELEMENT === 1 && profile_commitment_0.length === 32)) {
-          __compactRuntime.type_error('create_verified_profile',
-                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 53 char 1',
-                                      'Bytes<32>',
-                                      profile_commitment_0)
-        }
-        const context = { ...contextOrig_0 };
-        const partialProofData = {
-          input: {
-            value: _descriptor_0.toValue(user_id_0).concat(_descriptor_9.toValue(profile_commitment_0)),
-            alignment: _descriptor_0.alignment().concat(_descriptor_9.alignment())
-          },
-          output: undefined,
-          publicTranscript: [],
-          privateTranscriptOutputs: []
-        };
-        const result_0 = this._create_verified_profile_0(context,
-                                                         partialProofData,
-                                                         user_id_0,
-                                                         profile_commitment_0);
-        partialProofData.output = { value: _descriptor_2.toValue(result_0), alignment: _descriptor_2.alignment() };
-        return { result: result_0, context: context, proofData: partialProofData };
-      },
-      verify_and_disclose_age_range: (...args_1) => {
-        if (args_1.length !== 4) {
-          throw new __compactRuntime.CompactError(`verify_and_disclose_age_range: expected 4 arguments (as invoked from Typescript), received ${args_1.length}`);
-        }
-        const contextOrig_0 = args_1[0];
-        const user_id_0 = args_1[1];
-        const min_age_0 = args_1[2];
-        const max_age_0 = args_1[3];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
-          __compactRuntime.type_error('verify_and_disclose_age_range',
-                                      'argument 1 (as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 73 char 1',
-                                      'CircuitContext',
-                                      contextOrig_0)
-        }
-        if (!(typeof(user_id_0) === 'bigint' && user_id_0 >= 0n && user_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('verify_and_disclose_age_range',
-                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 73 char 1',
-                                      'Uint<0..4294967295>',
-                                      user_id_0)
-        }
-        if (!(typeof(min_age_0) === 'bigint' && min_age_0 >= 0n && min_age_0 <= 255n)) {
-          __compactRuntime.type_error('verify_and_disclose_age_range',
-                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 73 char 1',
-                                      'Uint<0..255>',
-                                      min_age_0)
-        }
-        if (!(typeof(max_age_0) === 'bigint' && max_age_0 >= 0n && max_age_0 <= 255n)) {
-          __compactRuntime.type_error('verify_and_disclose_age_range',
-                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 73 char 1',
-                                      'Uint<0..255>',
-                                      max_age_0)
-        }
-        const context = { ...contextOrig_0 };
-        const partialProofData = {
-          input: {
-            value: _descriptor_0.toValue(user_id_0).concat(_descriptor_8.toValue(min_age_0).concat(_descriptor_8.toValue(max_age_0))),
-            alignment: _descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_8.alignment()))
-          },
-          output: undefined,
-          publicTranscript: [],
-          privateTranscriptOutputs: []
-        };
-        const result_0 = this._verify_and_disclose_age_range_0(context,
-                                                               partialProofData,
-                                                               user_id_0,
-                                                               min_age_0,
-                                                               max_age_0);
-        partialProofData.output = { value: [], alignment: [] };
-        return { result: result_0, context: context, proofData: partialProofData };
-      },
-      verify_and_disclose_location_proximity: (...args_1) => {
-        if (args_1.length !== 5) {
-          throw new __compactRuntime.CompactError(`verify_and_disclose_location_proximity: expected 5 arguments (as invoked from Typescript), received ${args_1.length}`);
-        }
-        const contextOrig_0 = args_1[0];
-        const user_id_0 = args_1[1];
-        const target_lat_0 = args_1[2];
-        const target_lng_0 = args_1[3];
-        const max_distance_0 = args_1[4];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
-          __compactRuntime.type_error('verify_and_disclose_location_proximity',
-                                      'argument 1 (as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 98 char 1',
-                                      'CircuitContext',
-                                      contextOrig_0)
-        }
-        if (!(typeof(user_id_0) === 'bigint' && user_id_0 >= 0n && user_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('verify_and_disclose_location_proximity',
-                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 98 char 1',
-                                      'Uint<0..4294967295>',
-                                      user_id_0)
-        }
-        if (!(typeof(target_lat_0) === 'bigint' && target_lat_0 >= 0n && target_lat_0 <= 4294967295n)) {
-          __compactRuntime.type_error('verify_and_disclose_location_proximity',
-                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 98 char 1',
-                                      'Uint<0..4294967295>',
-                                      target_lat_0)
-        }
-        if (!(typeof(target_lng_0) === 'bigint' && target_lng_0 >= 0n && target_lng_0 <= 4294967295n)) {
-          __compactRuntime.type_error('verify_and_disclose_location_proximity',
-                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 98 char 1',
-                                      'Uint<0..4294967295>',
-                                      target_lng_0)
-        }
-        if (!(typeof(max_distance_0) === 'bigint' && max_distance_0 >= 0n && max_distance_0 <= 4294967295n)) {
-          __compactRuntime.type_error('verify_and_disclose_location_proximity',
-                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 98 char 1',
-                                      'Uint<0..4294967295>',
-                                      max_distance_0)
-        }
-        const context = { ...contextOrig_0 };
-        const partialProofData = {
-          input: {
-            value: _descriptor_0.toValue(user_id_0).concat(_descriptor_0.toValue(target_lat_0).concat(_descriptor_0.toValue(target_lng_0).concat(_descriptor_0.toValue(max_distance_0)))),
-            alignment: _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))
-          },
-          output: undefined,
-          publicTranscript: [],
-          privateTranscriptOutputs: []
-        };
-        const result_0 = this._verify_and_disclose_location_proximity_0(context,
-                                                                        partialProofData,
-                                                                        user_id_0,
-                                                                        target_lat_0,
-                                                                        target_lng_0,
-                                                                        max_distance_0);
-        partialProofData.output = { value: [], alignment: [] };
-        return { result: result_0, context: context, proofData: partialProofData };
-      },
-      verify_and_disclose_income_bracket: (...args_1) => {
-        if (args_1.length !== 4) {
-          throw new __compactRuntime.CompactError(`verify_and_disclose_income_bracket: expected 4 arguments (as invoked from Typescript), received ${args_1.length}`);
-        }
-        const contextOrig_0 = args_1[0];
-        const user_id_0 = args_1[1];
-        const min_income_0 = args_1[2];
-        const max_income_0 = args_1[3];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
-          __compactRuntime.type_error('verify_and_disclose_income_bracket',
-                                      'argument 1 (as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 123 char 1',
-                                      'CircuitContext',
-                                      contextOrig_0)
-        }
-        if (!(typeof(user_id_0) === 'bigint' && user_id_0 >= 0n && user_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('verify_and_disclose_income_bracket',
-                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 123 char 1',
-                                      'Uint<0..4294967295>',
-                                      user_id_0)
-        }
-        if (!(typeof(min_income_0) === 'bigint' && min_income_0 >= 0n && min_income_0 <= 18446744073709551615n)) {
-          __compactRuntime.type_error('verify_and_disclose_income_bracket',
-                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 123 char 1',
-                                      'Uint<0..18446744073709551615>',
-                                      min_income_0)
-        }
-        if (!(typeof(max_income_0) === 'bigint' && max_income_0 >= 0n && max_income_0 <= 18446744073709551615n)) {
-          __compactRuntime.type_error('verify_and_disclose_income_bracket',
-                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 123 char 1',
-                                      'Uint<0..18446744073709551615>',
-                                      max_income_0)
-        }
-        const context = { ...contextOrig_0 };
-        const partialProofData = {
-          input: {
-            value: _descriptor_0.toValue(user_id_0).concat(_descriptor_7.toValue(min_income_0).concat(_descriptor_7.toValue(max_income_0))),
-            alignment: _descriptor_0.alignment().concat(_descriptor_7.alignment().concat(_descriptor_7.alignment()))
-          },
-          output: undefined,
-          publicTranscript: [],
-          privateTranscriptOutputs: []
-        };
-        const result_0 = this._verify_and_disclose_income_bracket_0(context,
-                                                                    partialProofData,
-                                                                    user_id_0,
-                                                                    min_income_0,
-                                                                    max_income_0);
-        partialProofData.output = { value: [], alignment: [] };
-        return { result: result_0, context: context, proofData: partialProofData };
-      },
-      create_verified_match: (...args_1) => {
-        if (args_1.length !== 3) {
-          throw new __compactRuntime.CompactError(`create_verified_match: expected 3 arguments (as invoked from Typescript), received ${args_1.length}`);
-        }
-        const contextOrig_0 = args_1[0];
-        const user1_id_0 = args_1[1];
-        const user2_id_0 = args_1[2];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
-          __compactRuntime.type_error('create_verified_match',
-                                      'argument 1 (as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 146 char 1',
-                                      'CircuitContext',
-                                      contextOrig_0)
-        }
-        if (!(typeof(user1_id_0) === 'bigint' && user1_id_0 >= 0n && user1_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('create_verified_match',
-                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 146 char 1',
-                                      'Uint<0..4294967295>',
-                                      user1_id_0)
-        }
-        if (!(typeof(user2_id_0) === 'bigint' && user2_id_0 >= 0n && user2_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('create_verified_match',
-                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 146 char 1',
-                                      'Uint<0..4294967295>',
-                                      user2_id_0)
-        }
-        const context = { ...contextOrig_0 };
-        const partialProofData = {
-          input: {
-            value: _descriptor_0.toValue(user1_id_0).concat(_descriptor_0.toValue(user2_id_0)),
-            alignment: _descriptor_0.alignment().concat(_descriptor_0.alignment())
-          },
-          output: undefined,
-          publicTranscript: [],
-          privateTranscriptOutputs: []
-        };
-        const result_0 = this._create_verified_match_0(context,
-                                                       partialProofData,
-                                                       user1_id_0,
-                                                       user2_id_0);
-        partialProofData.output = { value: _descriptor_2.toValue(result_0), alignment: _descriptor_2.alignment() };
-        return { result: result_0, context: context, proofData: partialProofData };
-      },
-      check_verified_match: (...args_1) => {
-        if (args_1.length !== 3) {
-          throw new __compactRuntime.CompactError(`check_verified_match: expected 3 arguments (as invoked from Typescript), received ${args_1.length}`);
-        }
-        const contextOrig_0 = args_1[0];
-        const user1_id_0 = args_1[1];
-        const user2_id_0 = args_1[2];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
-          __compactRuntime.type_error('check_verified_match',
-                                      'argument 1 (as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 182 char 1',
-                                      'CircuitContext',
-                                      contextOrig_0)
-        }
-        if (!(typeof(user1_id_0) === 'bigint' && user1_id_0 >= 0n && user1_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('check_verified_match',
-                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 182 char 1',
-                                      'Uint<0..4294967295>',
-                                      user1_id_0)
-        }
-        if (!(typeof(user2_id_0) === 'bigint' && user2_id_0 >= 0n && user2_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('check_verified_match',
-                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 182 char 1',
-                                      'Uint<0..4294967295>',
-                                      user2_id_0)
-        }
-        const context = { ...contextOrig_0 };
-        const partialProofData = {
-          input: {
-            value: _descriptor_0.toValue(user1_id_0).concat(_descriptor_0.toValue(user2_id_0)),
-            alignment: _descriptor_0.alignment().concat(_descriptor_0.alignment())
-          },
-          output: undefined,
-          publicTranscript: [],
-          privateTranscriptOutputs: []
-        };
-        const result_0 = this._check_verified_match_0(context,
-                                                      partialProofData,
-                                                      user1_id_0,
-                                                      user2_id_0);
-        partialProofData.output = { value: _descriptor_2.toValue(result_0), alignment: _descriptor_2.alignment() };
-        return { result: result_0, context: context, proofData: partialProofData };
-      },
-      get_verification_status: (...args_1) => {
+      complete_user_verification: (...args_1) => {
         if (args_1.length !== 2) {
-          throw new __compactRuntime.CompactError(`get_verification_status: expected 2 arguments (as invoked from Typescript), received ${args_1.length}`);
+          throw new __compactRuntime.CompactError(`complete_user_verification: expected 2 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
         const contextOrig_0 = args_1[0];
         const user_id_0 = args_1[1];
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
-          __compactRuntime.type_error('get_verification_status',
+          __compactRuntime.type_error('complete_user_verification',
                                       'argument 1 (as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 193 char 1',
+                                      'UnifiedDatingPlatform.compact line 85 char 1',
                                       'CircuitContext',
                                       contextOrig_0)
         }
         if (!(typeof(user_id_0) === 'bigint' && user_id_0 >= 0n && user_id_0 <= 4294967295n)) {
-          __compactRuntime.type_error('get_verification_status',
+          __compactRuntime.type_error('complete_user_verification',
                                       'argument 1 (argument 2 as invoked from Typescript)',
-                                      'DemoDatingPlatform.compact line 193 char 1',
+                                      'UnifiedDatingPlatform.compact line 85 char 1',
                                       'Uint<0..4294967295>',
                                       user_id_0)
         }
@@ -439,21 +94,85 @@ class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = this._get_verification_status_0(context,
-                                                         partialProofData,
-                                                         user_id_0);
-        partialProofData.output = { value: _descriptor_5.toValue(result_0), alignment: _descriptor_5.alignment() };
+        const result_0 = this._complete_user_verification_0(context,
+                                                            partialProofData,
+                                                            user_id_0);
+        partialProofData.output = { value: [], alignment: [] };
+        return { result: result_0, context: context, proofData: partialProofData };
+      },
+      check_user_compatibility: (...args_1) => {
+        if (args_1.length !== 3) {
+          throw new __compactRuntime.CompactError(`check_user_compatibility: expected 3 arguments (as invoked from Typescript), received ${args_1.length}`);
+        }
+        const contextOrig_0 = args_1[0];
+        const user1_id_0 = args_1[1];
+        const user2_id_0 = args_1[2];
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
+          __compactRuntime.type_error('check_user_compatibility',
+                                      'argument 1 (as invoked from Typescript)',
+                                      'UnifiedDatingPlatform.compact line 104 char 1',
+                                      'CircuitContext',
+                                      contextOrig_0)
+        }
+        if (!(typeof(user1_id_0) === 'bigint' && user1_id_0 >= 0n && user1_id_0 <= 4294967295n)) {
+          __compactRuntime.type_error('check_user_compatibility',
+                                      'argument 1 (argument 2 as invoked from Typescript)',
+                                      'UnifiedDatingPlatform.compact line 104 char 1',
+                                      'Uint<0..4294967295>',
+                                      user1_id_0)
+        }
+        if (!(typeof(user2_id_0) === 'bigint' && user2_id_0 >= 0n && user2_id_0 <= 4294967295n)) {
+          __compactRuntime.type_error('check_user_compatibility',
+                                      'argument 2 (argument 3 as invoked from Typescript)',
+                                      'UnifiedDatingPlatform.compact line 104 char 1',
+                                      'Uint<0..4294967295>',
+                                      user2_id_0)
+        }
+        const context = { ...contextOrig_0 };
+        const partialProofData = {
+          input: {
+            value: _descriptor_0.toValue(user1_id_0).concat(_descriptor_0.toValue(user2_id_0)),
+            alignment: _descriptor_0.alignment().concat(_descriptor_0.alignment())
+          },
+          output: undefined,
+          publicTranscript: [],
+          privateTranscriptOutputs: []
+        };
+        const result_0 = this._check_user_compatibility_0(context,
+                                                          partialProofData,
+                                                          user1_id_0,
+                                                          user2_id_0);
+        partialProofData.output = { value: [], alignment: [] };
+        return { result: result_0, context: context, proofData: partialProofData };
+      },
+      test_dating_platform: (...args_1) => {
+        if (args_1.length !== 1) {
+          throw new __compactRuntime.CompactError(`test_dating_platform: expected 1 argument (as invoked from Typescript), received ${args_1.length}`);
+        }
+        const contextOrig_0 = args_1[0];
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
+          __compactRuntime.type_error('test_dating_platform',
+                                      'argument 1 (as invoked from Typescript)',
+                                      'UnifiedDatingPlatform.compact line 128 char 1',
+                                      'CircuitContext',
+                                      contextOrig_0)
+        }
+        const context = { ...contextOrig_0 };
+        const partialProofData = {
+          input: { value: [], alignment: [] },
+          output: undefined,
+          publicTranscript: [],
+          privateTranscriptOutputs: []
+        };
+        const result_0 = this._test_dating_platform_0(context, partialProofData);
+        partialProofData.output = { value: [], alignment: [] };
         return { result: result_0, context: context, proofData: partialProofData };
       }
     };
     this.impureCircuits = {
-      create_verified_profile: this.circuits.create_verified_profile,
-      verify_and_disclose_age_range: this.circuits.verify_and_disclose_age_range,
-      verify_and_disclose_location_proximity: this.circuits.verify_and_disclose_location_proximity,
-      verify_and_disclose_income_bracket: this.circuits.verify_and_disclose_income_bracket,
-      create_verified_match: this.circuits.create_verified_match,
-      check_verified_match: this.circuits.check_verified_match,
-      get_verification_status: this.circuits.get_verification_status
+      complete_user_verification: this.circuits.complete_user_verification,
+      check_user_compatibility: this.circuits.check_user_compatibility,
+      test_dating_platform: this.circuits.test_dating_platform
     };
   }
   initialState(...args_0) {
@@ -480,16 +199,10 @@ class Contract {
     stateValue_0 = stateValue_0.arrayPush(__compactRuntime.StateValue.newNull());
     stateValue_0 = stateValue_0.arrayPush(__compactRuntime.StateValue.newNull());
     stateValue_0 = stateValue_0.arrayPush(__compactRuntime.StateValue.newNull());
-    stateValue_0 = stateValue_0.arrayPush(__compactRuntime.StateValue.newNull());
-    stateValue_0 = stateValue_0.arrayPush(__compactRuntime.StateValue.newNull());
     state_0.data = stateValue_0;
-    state_0.setOperation('create_verified_profile', new __compactRuntime.ContractOperation());
-    state_0.setOperation('verify_and_disclose_age_range', new __compactRuntime.ContractOperation());
-    state_0.setOperation('verify_and_disclose_location_proximity', new __compactRuntime.ContractOperation());
-    state_0.setOperation('verify_and_disclose_income_bracket', new __compactRuntime.ContractOperation());
-    state_0.setOperation('create_verified_match', new __compactRuntime.ContractOperation());
-    state_0.setOperation('check_verified_match', new __compactRuntime.ContractOperation());
-    state_0.setOperation('get_verification_status', new __compactRuntime.ContractOperation());
+    state_0.setOperation('complete_user_verification', new __compactRuntime.ContractOperation());
+    state_0.setOperation('check_user_compatibility', new __compactRuntime.ContractOperation());
+    state_0.setOperation('test_dating_platform', new __compactRuntime.ContractOperation());
     const context = {
       originalState: state_0,
       currentPrivateState: constructorContext_0.initialPrivateState,
@@ -506,28 +219,8 @@ class Contract {
                     partialProofData,
                     [
                      { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(0n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
-                     { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(0n),
-                                                                            alignment: _descriptor_7.alignment() }).encode() } },
-                     { ins: { cached: false, n: 1 } }]);
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(1n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
-                     { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(0n),
-                                                                            alignment: _descriptor_7.alignment() }).encode() } },
-                     { ins: { cached: false, n: 1 } }]);
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(2n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0n),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
                      { push: { storage: true,
                                value: __compactRuntime.StateValue.newMap(
                                         new __compactRuntime.StateMap()
@@ -537,8 +230,8 @@ class Contract {
                     partialProofData,
                     [
                      { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(3n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(1n),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
                      { push: { storage: true,
                                value: __compactRuntime.StateValue.newMap(
                                         new __compactRuntime.StateMap()
@@ -548,8 +241,8 @@ class Contract {
                     partialProofData,
                     [
                      { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(4n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(2n),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
                      { push: { storage: true,
                                value: __compactRuntime.StateValue.newMap(
                                         new __compactRuntime.StateMap()
@@ -559,8 +252,8 @@ class Contract {
                     partialProofData,
                     [
                      { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(5n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(3n),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
                      { push: { storage: true,
                                value: __compactRuntime.StateValue.newMap(
                                         new __compactRuntime.StateMap()
@@ -570,23 +263,12 @@ class Contract {
                     partialProofData,
                     [
                      { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(6n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(4n),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
                      { push: { storage: true,
                                value: __compactRuntime.StateValue.newMap(
                                         new __compactRuntime.StateMap()
                                       ).encode() } },
-                     { ins: { cached: false, n: 1 } }]);
-    const tmp_0 = 0n;
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(0n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
-                     { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(tmp_0),
-                                                                            alignment: _descriptor_7.alignment() }).encode() } },
                      { ins: { cached: false, n: 1 } }]);
     state_0.data = context.transactionContext.state;
     return {
@@ -595,34 +277,60 @@ class Contract {
       currentZswapLocalState: context.currentZswapLocalState
     }
   }
-  _getUserAge_0(context, partialProofData, user_id_0) {
-    const witnessContext_0 = __compactRuntime.witnessContext(ledger(context.transactionContext.state), context.currentPrivateState, context.transactionContext.address);
-    const [nextPrivateState_0, result_0] = this.witnesses.getUserAge(witnessContext_0,
-                                                                     user_id_0);
-    context.currentPrivateState = nextPrivateState_0;
-    if (!(typeof(result_0) === 'bigint' && result_0 >= 0n && result_0 <= 255n)) {
-      __compactRuntime.type_error('getUserAge',
-                                  'return value',
-                                  'DemoDatingPlatform.compact line 45 char 1',
-                                  'Uint<0..255>',
-                                  result_0)
-    }
-    partialProofData.privateTranscriptOutputs.push({
-      value: _descriptor_8.toValue(result_0),
-      alignment: _descriptor_8.alignment()
-    });
+  _persistentHash_0(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_4, value_0);
     return result_0;
   }
-  _getUserLocation_0(context, partialProofData, user_id_0) {
+  _generate_identity_hash_0(biometric_data_0, salt_0) {
+    return this._persistentHash_0([new Uint8Array([105, 100, 101, 110, 116, 105, 116, 121, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+                                   biometric_data_0,
+                                   salt_0]);
+  }
+  _verify_unique_identity_0(identity_hash_0) {
+    const zero_hash_0 = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    return !this._equal_0(identity_hash_0, zero_hash_0);
+  }
+  _get_age_range_0(age_0) {
+    const range_0 = age_0 >= 18n && age_0 <= 25n ?
+                    1n :
+                    age_0 >= 26n && age_0 <= 35n ?
+                    2n :
+                    age_0 >= 36n && age_0 <= 45n ?
+                    3n :
+                    age_0 >= 46n && age_0 <= 55n ? 4n : age_0 >= 56n ? 5n : 0n;
+    return range_0;
+  }
+  _verify_minimum_age_0(age_0, minimum_age_0) { return age_0 >= minimum_age_0; }
+  _calculate_compatibility_score_0(age_range1_0,
+                                   age_range2_0,
+                                   location_compatible_0)
+  {
+    const age_diff_0 = age_range1_0 > age_range2_0 ?
+                       (__compactRuntime.assert(!(age_range1_0 < age_range2_0),
+                                                'result of subtraction would be negative'),
+                        age_range1_0 - age_range2_0)
+                       :
+                       (__compactRuntime.assert(!(age_range2_0 < age_range1_0),
+                                                'result of subtraction would be negative'),
+                        age_range2_0 - age_range1_0);
+    const age_score_0 = this._equal_1(age_diff_0, 0n) ?
+                        50n :
+                        this._equal_2(age_diff_0, 1n) ?
+                        35n :
+                        this._equal_3(age_diff_0, 2n) ? 20n : 10n;
+    const location_score_0 = location_compatible_0 ? 40n : 0n;
+    const total_score_0 = age_score_0 + location_score_0;
+    if (total_score_0 > 100n) { return 100n; } else { return total_score_0; }
+  }
+  _getBiometricData_0(context, partialProofData) {
     const witnessContext_0 = __compactRuntime.witnessContext(ledger(context.transactionContext.state), context.currentPrivateState, context.transactionContext.address);
-    const [nextPrivateState_0, result_0] = this.witnesses.getUserLocation(witnessContext_0,
-                                                                          user_id_0);
+    const [nextPrivateState_0, result_0] = this.witnesses.getBiometricData(witnessContext_0);
     context.currentPrivateState = nextPrivateState_0;
-    if (!(Array.isArray(result_0) && result_0.length === 2  && typeof(result_0[0]) === 'bigint' && result_0[0] >= 0n && result_0[0] <= 4294967295n && typeof(result_0[1]) === 'bigint' && result_0[1] >= 0n && result_0[1] <= 4294967295n)) {
-      __compactRuntime.type_error('getUserLocation',
+    if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
+      __compactRuntime.type_error('getBiometricData',
                                   'return value',
-                                  'DemoDatingPlatform.compact line 46 char 1',
-                                  '[Uint<0..4294967295>, Uint<0..4294967295>]',
+                                  'UnifiedDatingPlatform.compact line 77 char 1',
+                                  'Bytes<32>',
                                   result_0)
     }
     partialProofData.privateTranscriptOutputs.push({
@@ -631,30 +339,106 @@ class Contract {
     });
     return result_0;
   }
-  _getUserIncome_0(context, partialProofData, user_id_0) {
+  _getIdentitySalt_0(context, partialProofData) {
     const witnessContext_0 = __compactRuntime.witnessContext(ledger(context.transactionContext.state), context.currentPrivateState, context.transactionContext.address);
-    const [nextPrivateState_0, result_0] = this.witnesses.getUserIncome(witnessContext_0,
-                                                                        user_id_0);
+    const [nextPrivateState_0, result_0] = this.witnesses.getIdentitySalt(witnessContext_0);
     context.currentPrivateState = nextPrivateState_0;
-    if (!(typeof(result_0) === 'bigint' && result_0 >= 0n && result_0 <= 18446744073709551615n)) {
-      __compactRuntime.type_error('getUserIncome',
+    if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
+      __compactRuntime.type_error('getIdentitySalt',
                                   'return value',
-                                  'DemoDatingPlatform.compact line 47 char 1',
-                                  'Uint<0..18446744073709551615>',
+                                  'UnifiedDatingPlatform.compact line 78 char 1',
+                                  'Bytes<32>',
                                   result_0)
     }
     partialProofData.privateTranscriptOutputs.push({
-      value: _descriptor_7.toValue(result_0),
-      alignment: _descriptor_7.alignment()
+      value: _descriptor_3.toValue(result_0),
+      alignment: _descriptor_3.alignment()
     });
     return result_0;
   }
-  _create_verified_profile_0(context,
-                             partialProofData,
-                             user_id_0,
-                             profile_commitment_0)
+  _getUserAge_0(context, partialProofData) {
+    const witnessContext_0 = __compactRuntime.witnessContext(ledger(context.transactionContext.state), context.currentPrivateState, context.transactionContext.address);
+    const [nextPrivateState_0, result_0] = this.witnesses.getUserAge(witnessContext_0);
+    context.currentPrivateState = nextPrivateState_0;
+    if (!(typeof(result_0) === 'bigint' && result_0 >= 0n && result_0 <= 255n)) {
+      __compactRuntime.type_error('getUserAge',
+                                  'return value',
+                                  'UnifiedDatingPlatform.compact line 79 char 1',
+                                  'Uint<0..255>',
+                                  result_0)
+    }
+    partialProofData.privateTranscriptOutputs.push({
+      value: _descriptor_1.toValue(result_0),
+      alignment: _descriptor_1.alignment()
+    });
+    return result_0;
+  }
+  _complete_user_verification_0(context, partialProofData, user_id_0) {
+    const biometric_data_0 = this._getBiometricData_0(context, partialProofData);
+    const salt_0 = this._getIdentitySalt_0(context, partialProofData);
+    const identity_hash_0 = this._generate_identity_hash_0(biometric_data_0,
+                                                           salt_0);
+    const is_unique_0 = this._verify_unique_identity_0(identity_hash_0);
+    const user_age_0 = this._getUserAge_0(context, partialProofData);
+    const is_adult_0 = this._verify_minimum_age_0(user_age_0, 18n);
+    const age_range_0 = is_adult_0 ? this._get_age_range_0(user_age_0) : 0n;
+    const tmp_0 = is_unique_0 && is_adult_0;
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(0n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_0),
+                                                                            alignment: _descriptor_2.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(1n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(identity_hash_0),
+                                                                            alignment: _descriptor_3.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(2n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(age_range_0),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    return [];
+  }
+  _check_user_compatibility_0(context, partialProofData, user1_id_0, user2_id_0)
   {
-    __compactRuntime.assert(!_descriptor_2.fromValue(Contract._query(context,
+    const user1_verified_0 = _descriptor_2.fromValue(Contract._query(context,
                                                                      partialProofData,
                                                                      [
                                                                       { dup: { n: 0 } },
@@ -662,15 +446,86 @@ class Contract {
                                                                                pushPath: false,
                                                                                path: [
                                                                                       { tag: 'value',
-                                                                                        value: { value: _descriptor_8.toValue(2n),
-                                                                                                 alignment: _descriptor_8.alignment() } }] } },
-                                                                      { push: { storage: false,
-                                                                                value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                             alignment: _descriptor_0.alignment() }).encode() } },
-                                                                      'member',
-                                                                      { popeq: { cached: true,
-                                                                                 result: undefined } }]).value),
-                            'User ID already exists');
+                                                                                        value: { value: _descriptor_1.toValue(0n),
+                                                                                                 alignment: _descriptor_1.alignment() } }] } },
+                                                                      { idx: { cached: false,
+                                                                               pushPath: false,
+                                                                               path: [
+                                                                                      { tag: 'value',
+                                                                                        value: { value: _descriptor_0.toValue(user1_id_0),
+                                                                                                 alignment: _descriptor_0.alignment() } }] } },
+                                                                      { popeq: { cached: false,
+                                                                                 result: undefined } }]).value);
+    const user2_verified_0 = _descriptor_2.fromValue(Contract._query(context,
+                                                                     partialProofData,
+                                                                     [
+                                                                      { dup: { n: 0 } },
+                                                                      { idx: { cached: false,
+                                                                               pushPath: false,
+                                                                               path: [
+                                                                                      { tag: 'value',
+                                                                                        value: { value: _descriptor_1.toValue(0n),
+                                                                                                 alignment: _descriptor_1.alignment() } }] } },
+                                                                      { idx: { cached: false,
+                                                                               pushPath: false,
+                                                                               path: [
+                                                                                      { tag: 'value',
+                                                                                        value: { value: _descriptor_0.toValue(user2_id_0),
+                                                                                                 alignment: _descriptor_0.alignment() } }] } },
+                                                                      { popeq: { cached: false,
+                                                                                 result: undefined } }]).value);
+    const age_range1_0 = _descriptor_1.fromValue(Contract._query(context,
+                                                                 partialProofData,
+                                                                 [
+                                                                  { dup: { n: 0 } },
+                                                                  { idx: { cached: false,
+                                                                           pushPath: false,
+                                                                           path: [
+                                                                                  { tag: 'value',
+                                                                                    value: { value: _descriptor_1.toValue(2n),
+                                                                                             alignment: _descriptor_1.alignment() } }] } },
+                                                                  { idx: { cached: false,
+                                                                           pushPath: false,
+                                                                           path: [
+                                                                                  { tag: 'value',
+                                                                                    value: { value: _descriptor_0.toValue(user1_id_0),
+                                                                                             alignment: _descriptor_0.alignment() } }] } },
+                                                                  { popeq: { cached: false,
+                                                                             result: undefined } }]).value);
+    const age_range2_0 = _descriptor_1.fromValue(Contract._query(context,
+                                                                 partialProofData,
+                                                                 [
+                                                                  { dup: { n: 0 } },
+                                                                  { idx: { cached: false,
+                                                                           pushPath: false,
+                                                                           path: [
+                                                                                  { tag: 'value',
+                                                                                    value: { value: _descriptor_1.toValue(2n),
+                                                                                             alignment: _descriptor_1.alignment() } }] } },
+                                                                  { idx: { cached: false,
+                                                                           pushPath: false,
+                                                                           path: [
+                                                                                  { tag: 'value',
+                                                                                    value: { value: _descriptor_0.toValue(user2_id_0),
+                                                                                             alignment: _descriptor_0.alignment() } }] } },
+                                                                  { popeq: { cached: false,
+                                                                             result: undefined } }]).value);
+    const both_verified_0 = user1_verified_0 && user2_verified_0;
+    const location_compatible_0 = both_verified_0;
+    const compatibility_0 = both_verified_0 ?
+                            this._calculate_compatibility_score_0(age_range1_0,
+                                                                  age_range2_0,
+                                                                  location_compatible_0)
+                            :
+                            0n;
+    const pair_key_0 = ((t1) => {
+                         if (t1 > 4294967295n) {
+                           throw new __compactRuntime.CompactError('UnifiedDatingPlatform.compact line 123 char 22: cast from unsigned value to smaller unsigned value failed: ' + t1 + ' is greater than 4294967295');
+                         }
+                         return t1;
+                       })(user1_id_0 < user2_id_0 ?
+                          user1_id_0 + user2_id_0 :
+                          user2_id_0 + user1_id_0);
     Contract._query(context,
                     partialProofData,
                     [
@@ -678,46 +533,32 @@ class Contract {
                               pushPath: true,
                               path: [
                                      { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(2n),
-                                                alignment: _descriptor_8.alignment() } }] } },
+                                       value: { value: _descriptor_1.toValue(4n),
+                                                alignment: _descriptor_1.alignment() } }] } },
                      { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(pair_key_0),
                                                                             alignment: _descriptor_0.alignment() }).encode() } },
                      { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0),
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(compatibility_0),
                                                                             alignment: _descriptor_1.alignment() }).encode() } },
                      { ins: { cached: false, n: 1 } },
                      { ins: { cached: true, n: 1 } }]);
-    const tmp_0 = ((t1) => {
-                    if (t1 > 18446744073709551615n) {
-                      throw new __compactRuntime.CompactError('DemoDatingPlatform.compact line 64 char 19: cast from unsigned value to smaller unsigned value failed: ' + t1 + ' is greater than 18446744073709551615');
-                    }
-                    return t1;
-                  })(_descriptor_7.fromValue(Contract._query(context,
-                                                             partialProofData,
-                                                             [
-                                                              { dup: { n: 0 } },
-                                                              { idx: { cached: false,
-                                                                       pushPath: false,
-                                                                       path: [
-                                                                              { tag: 'value',
-                                                                                value: { value: _descriptor_8.toValue(0n),
-                                                                                         alignment: _descriptor_8.alignment() } }] } },
-                                                              { popeq: { cached: false,
-                                                                         result: undefined } }]).value)
-                     +
-                     1n);
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(0n),
-                                                                            alignment: _descriptor_8.alignment() }).encode() } },
-                     { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(tmp_0),
-                                                                            alignment: _descriptor_7.alignment() }).encode() } },
-                     { ins: { cached: false, n: 1 } }]);
-    const tmp_1 = 1n;
+    return [];
+  }
+  _test_dating_platform_0(context, partialProofData) {
+    const user1_id_0 = 1001n;
+    const user2_id_0 = 1002n;
+    const test_biometric1_0 = new Uint8Array([117, 115, 101, 114, 49, 95, 102, 97, 99, 101, 95, 101, 110, 99, 111, 100, 105, 110, 103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const test_salt1_0 = new Uint8Array([115, 97, 108, 116, 49, 95, 97, 98, 99, 49, 50, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const identity1_0 = this._generate_identity_hash_0(test_biometric1_0,
+                                                       test_salt1_0);
+    const test_biometric2_0 = new Uint8Array([117, 115, 101, 114, 50, 95, 102, 97, 99, 101, 95, 101, 110, 99, 111, 100, 105, 110, 103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const test_salt2_0 = new Uint8Array([115, 97, 108, 116, 50, 95, 100, 101, 102, 52, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const identity2_0 = this._generate_identity_hash_0(test_biometric2_0,
+                                                       test_salt2_0);
+    const age_range1_0 = this._get_age_range_0(25n);
+    const age_range2_0 = this._get_age_range_0(30n);
+    const tmp_0 = user1_id_0;
     Contract._query(context,
                     partialProofData,
                     [
@@ -725,759 +566,144 @@ class Contract {
                               pushPath: true,
                               path: [
                                      { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(1n),
-                                                alignment: _descriptor_8.alignment() } }] } },
-                     { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                            { value: _descriptor_6.toValue(tmp_1),
-                                              alignment: _descriptor_6.alignment() }
-                                              .value
-                                          )) } },
+                                       value: { value: _descriptor_1.toValue(0n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_0),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(true),
+                                                                            alignment: _descriptor_2.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
                      { ins: { cached: true, n: 1 } }]);
+    const tmp_1 = user2_id_0;
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(0n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_1),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(true),
+                                                                            alignment: _descriptor_2.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    const tmp_2 = user1_id_0;
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(1n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_2),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(identity1_0),
+                                                                            alignment: _descriptor_3.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    const tmp_3 = user2_id_0;
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(1n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_3),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(identity2_0),
+                                                                            alignment: _descriptor_3.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    const tmp_4 = user1_id_0;
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(2n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_4),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(age_range1_0),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    const tmp_5 = user2_id_0;
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(2n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_5),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(age_range2_0),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    const compatibility_0 = this._calculate_compatibility_score_0(age_range1_0,
+                                                                  age_range2_0,
+                                                                  true);
+    const pair_key_0 = user1_id_0 + user2_id_0;
+    Contract._query(context,
+                    partialProofData,
+                    [
+                     { idx: { cached: false,
+                              pushPath: true,
+                              path: [
+                                     { tag: 'value',
+                                       value: { value: _descriptor_1.toValue(4n),
+                                                alignment: _descriptor_1.alignment() } }] } },
+                     { push: { storage: false,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(pair_key_0),
+                                                                            alignment: _descriptor_0.alignment() }).encode() } },
+                     { push: { storage: true,
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(compatibility_0),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
+                     { ins: { cached: false, n: 1 } },
+                     { ins: { cached: true, n: 1 } }]);
+    return [];
+  }
+  _equal_0(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
-  _verify_and_disclose_age_range_0(context,
-                                   partialProofData,
-                                   user_id_0,
-                                   min_age_0,
-                                   max_age_0)
-  {
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User does not exist');
-    __compactRuntime.assert(_descriptor_1.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_0.toValue(user_id_0),
-                                                                                                alignment: _descriptor_0.alignment() } }] } },
-                                                                     { popeq: { cached: false,
-                                                                                result: undefined } }]).value)
-                            ===
-                            0,
-                            'User not active');
-    const user_age_0 = this._getUserAge_0(context, partialProofData, user_id_0);
-    const min_check_0 = user_age_0 >= min_age_0;
-    const max_check_0 = user_age_0 <= max_age_0;
-    const in_range_0 = min_check_0 && max_check_0;
-    const result_0 = in_range_0 ? 0 : 1;
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { idx: { cached: false,
-                              pushPath: true,
-                              path: [
-                                     { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(3n),
-                                                alignment: _descriptor_8.alignment() } }] } },
-                     { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                     { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_4.toValue(result_0),
-                                                                            alignment: _descriptor_4.alignment() }).encode() } },
-                     { ins: { cached: false, n: 1 } },
-                     { ins: { cached: true, n: 1 } }]);
-    const tmp_0 = 1n;
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { idx: { cached: false,
-                              pushPath: true,
-                              path: [
-                                     { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(1n),
-                                                alignment: _descriptor_8.alignment() } }] } },
-                     { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                            { value: _descriptor_6.toValue(tmp_0),
-                                              alignment: _descriptor_6.alignment() }
-                                              .value
-                                          )) } },
-                     { ins: { cached: true, n: 1 } }]);
-    return [];
+  _equal_1(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
   }
-  _verify_and_disclose_location_proximity_0(context,
-                                            partialProofData,
-                                            user_id_0,
-                                            target_lat_0,
-                                            target_lng_0,
-                                            max_distance_0)
-  {
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User does not exist');
-    __compactRuntime.assert(_descriptor_1.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_0.toValue(user_id_0),
-                                                                                                alignment: _descriptor_0.alignment() } }] } },
-                                                                     { popeq: { cached: false,
-                                                                                result: undefined } }]).value)
-                            ===
-                            0,
-                            'User not active');
-    const __compact_pattern_tmp1_0 = this._getUserLocation_0(context,
-                                                             partialProofData,
-                                                             user_id_0);
-    const user_lat_0 = __compact_pattern_tmp1_0[0];
-    const user_lng_0 = __compact_pattern_tmp1_0[1];
-    const lat_diff_0 = user_lat_0 >= target_lat_0 ?
-                       (__compactRuntime.assert(!(user_lat_0 < target_lat_0),
-                                                'result of subtraction would be negative'),
-                        user_lat_0 - target_lat_0)
-                       :
-                       (__compactRuntime.assert(!(target_lat_0 < user_lat_0),
-                                                'result of subtraction would be negative'),
-                        target_lat_0 - user_lat_0);
-    const lng_diff_0 = user_lng_0 >= target_lng_0 ?
-                       (__compactRuntime.assert(!(user_lng_0 < target_lng_0),
-                                                'result of subtraction would be negative'),
-                        user_lng_0 - target_lng_0)
-                       :
-                       (__compactRuntime.assert(!(target_lng_0 < user_lng_0),
-                                                'result of subtraction would be negative'),
-                        target_lng_0 - user_lng_0);
-    const manhattan_distance_0 = lat_diff_0 + lng_diff_0;
-    const within_range_0 = manhattan_distance_0 <= max_distance_0;
-    const result_0 = within_range_0 ? 0 : 1;
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { idx: { cached: false,
-                              pushPath: true,
-                              path: [
-                                     { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(4n),
-                                                alignment: _descriptor_8.alignment() } }] } },
-                     { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                     { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_4.toValue(result_0),
-                                                                            alignment: _descriptor_4.alignment() }).encode() } },
-                     { ins: { cached: false, n: 1 } },
-                     { ins: { cached: true, n: 1 } }]);
-    const tmp_0 = 1n;
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { idx: { cached: false,
-                              pushPath: true,
-                              path: [
-                                     { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(1n),
-                                                alignment: _descriptor_8.alignment() } }] } },
-                     { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                            { value: _descriptor_6.toValue(tmp_0),
-                                              alignment: _descriptor_6.alignment() }
-                                              .value
-                                          )) } },
-                     { ins: { cached: true, n: 1 } }]);
-    return [];
+  _equal_2(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
   }
-  _verify_and_disclose_income_bracket_0(context,
-                                        partialProofData,
-                                        user_id_0,
-                                        min_income_0,
-                                        max_income_0)
-  {
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User does not exist');
-    __compactRuntime.assert(_descriptor_1.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_0.toValue(user_id_0),
-                                                                                                alignment: _descriptor_0.alignment() } }] } },
-                                                                     { popeq: { cached: false,
-                                                                                result: undefined } }]).value)
-                            ===
-                            0,
-                            'User not active');
-    const user_income_0 = this._getUserIncome_0(context,
-                                                partialProofData,
-                                                user_id_0);
-    const min_check_0 = user_income_0 >= min_income_0;
-    const max_check_0 = user_income_0 <= max_income_0;
-    const in_range_0 = min_check_0 && max_check_0;
-    const result_0 = in_range_0 ? 0 : 1;
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { idx: { cached: false,
-                              pushPath: true,
-                              path: [
-                                     { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(5n),
-                                                alignment: _descriptor_8.alignment() } }] } },
-                     { push: { storage: false,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                     { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_4.toValue(result_0),
-                                                                            alignment: _descriptor_4.alignment() }).encode() } },
-                     { ins: { cached: false, n: 1 } },
-                     { ins: { cached: true, n: 1 } }]);
-    const tmp_0 = 1n;
-    Contract._query(context,
-                    partialProofData,
-                    [
-                     { idx: { cached: false,
-                              pushPath: true,
-                              path: [
-                                     { tag: 'value',
-                                       value: { value: _descriptor_8.toValue(1n),
-                                                alignment: _descriptor_8.alignment() } }] } },
-                     { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                            { value: _descriptor_6.toValue(tmp_0),
-                                              alignment: _descriptor_6.alignment() }
-                                              .value
-                                          )) } },
-                     { ins: { cached: true, n: 1 } }]);
-    return [];
-  }
-  _create_verified_match_0(context, partialProofData, user1_id_0, user2_id_0) {
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user1_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User 1 does not exist');
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user2_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User 2 does not exist');
-    __compactRuntime.assert(_descriptor_1.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_0.toValue(user1_id_0),
-                                                                                                alignment: _descriptor_0.alignment() } }] } },
-                                                                     { popeq: { cached: false,
-                                                                                result: undefined } }]).value)
-                            ===
-                            0,
-                            'User 1 not active');
-    __compactRuntime.assert(_descriptor_1.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_0.toValue(user2_id_0),
-                                                                                                alignment: _descriptor_0.alignment() } }] } },
-                                                                     { popeq: { cached: false,
-                                                                                result: undefined } }]).value)
-                            ===
-                            0,
-                            'User 2 not active');
-    const user1_age_verified_0 = _descriptor_2.fromValue(Contract._query(context,
-                                                                         partialProofData,
-                                                                         [
-                                                                          { dup: { n: 0 } },
-                                                                          { idx: { cached: false,
-                                                                                   pushPath: false,
-                                                                                   path: [
-                                                                                          { tag: 'value',
-                                                                                            value: { value: _descriptor_8.toValue(3n),
-                                                                                                     alignment: _descriptor_8.alignment() } }] } },
-                                                                          { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user1_id_0),
-                                                                                                                                 alignment: _descriptor_0.alignment() }).encode() } },
-                                                                          'member',
-                                                                          { popeq: { cached: true,
-                                                                                     result: undefined } }]).value)
-                                 &&
-                                 _descriptor_4.fromValue(Contract._query(context,
-                                                                         partialProofData,
-                                                                         [
-                                                                          { dup: { n: 0 } },
-                                                                          { idx: { cached: false,
-                                                                                   pushPath: false,
-                                                                                   path: [
-                                                                                          { tag: 'value',
-                                                                                            value: { value: _descriptor_8.toValue(3n),
-                                                                                                     alignment: _descriptor_8.alignment() } }] } },
-                                                                          { idx: { cached: false,
-                                                                                   pushPath: false,
-                                                                                   path: [
-                                                                                          { tag: 'value',
-                                                                                            value: { value: _descriptor_0.toValue(user1_id_0),
-                                                                                                     alignment: _descriptor_0.alignment() } }] } },
-                                                                          { popeq: { cached: false,
-                                                                                     result: undefined } }]).value)
-                                 ===
-                                 0;
-    const user2_age_verified_0 = _descriptor_2.fromValue(Contract._query(context,
-                                                                         partialProofData,
-                                                                         [
-                                                                          { dup: { n: 0 } },
-                                                                          { idx: { cached: false,
-                                                                                   pushPath: false,
-                                                                                   path: [
-                                                                                          { tag: 'value',
-                                                                                            value: { value: _descriptor_8.toValue(3n),
-                                                                                                     alignment: _descriptor_8.alignment() } }] } },
-                                                                          { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user2_id_0),
-                                                                                                                                 alignment: _descriptor_0.alignment() }).encode() } },
-                                                                          'member',
-                                                                          { popeq: { cached: true,
-                                                                                     result: undefined } }]).value)
-                                 &&
-                                 _descriptor_4.fromValue(Contract._query(context,
-                                                                         partialProofData,
-                                                                         [
-                                                                          { dup: { n: 0 } },
-                                                                          { idx: { cached: false,
-                                                                                   pushPath: false,
-                                                                                   path: [
-                                                                                          { tag: 'value',
-                                                                                            value: { value: _descriptor_8.toValue(3n),
-                                                                                                     alignment: _descriptor_8.alignment() } }] } },
-                                                                          { idx: { cached: false,
-                                                                                   pushPath: false,
-                                                                                   path: [
-                                                                                          { tag: 'value',
-                                                                                            value: { value: _descriptor_0.toValue(user2_id_0),
-                                                                                                     alignment: _descriptor_0.alignment() } }] } },
-                                                                          { popeq: { cached: false,
-                                                                                     result: undefined } }]).value)
-                                 ===
-                                 0;
-    const user1_location_verified_0 = _descriptor_2.fromValue(Contract._query(context,
-                                                                              partialProofData,
-                                                                              [
-                                                                               { dup: { n: 0 } },
-                                                                               { idx: { cached: false,
-                                                                                        pushPath: false,
-                                                                                        path: [
-                                                                                               { tag: 'value',
-                                                                                                 value: { value: _descriptor_8.toValue(4n),
-                                                                                                          alignment: _descriptor_8.alignment() } }] } },
-                                                                               { push: { storage: false,
-                                                                                         value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user1_id_0),
-                                                                                                                                      alignment: _descriptor_0.alignment() }).encode() } },
-                                                                               'member',
-                                                                               { popeq: { cached: true,
-                                                                                          result: undefined } }]).value)
-                                      &&
-                                      _descriptor_4.fromValue(Contract._query(context,
-                                                                              partialProofData,
-                                                                              [
-                                                                               { dup: { n: 0 } },
-                                                                               { idx: { cached: false,
-                                                                                        pushPath: false,
-                                                                                        path: [
-                                                                                               { tag: 'value',
-                                                                                                 value: { value: _descriptor_8.toValue(4n),
-                                                                                                          alignment: _descriptor_8.alignment() } }] } },
-                                                                               { idx: { cached: false,
-                                                                                        pushPath: false,
-                                                                                        path: [
-                                                                                               { tag: 'value',
-                                                                                                 value: { value: _descriptor_0.toValue(user1_id_0),
-                                                                                                          alignment: _descriptor_0.alignment() } }] } },
-                                                                               { popeq: { cached: false,
-                                                                                          result: undefined } }]).value)
-                                      ===
-                                      0;
-    const user2_location_verified_0 = _descriptor_2.fromValue(Contract._query(context,
-                                                                              partialProofData,
-                                                                              [
-                                                                               { dup: { n: 0 } },
-                                                                               { idx: { cached: false,
-                                                                                        pushPath: false,
-                                                                                        path: [
-                                                                                               { tag: 'value',
-                                                                                                 value: { value: _descriptor_8.toValue(4n),
-                                                                                                          alignment: _descriptor_8.alignment() } }] } },
-                                                                               { push: { storage: false,
-                                                                                         value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user2_id_0),
-                                                                                                                                      alignment: _descriptor_0.alignment() }).encode() } },
-                                                                               'member',
-                                                                               { popeq: { cached: true,
-                                                                                          result: undefined } }]).value)
-                                      &&
-                                      _descriptor_4.fromValue(Contract._query(context,
-                                                                              partialProofData,
-                                                                              [
-                                                                               { dup: { n: 0 } },
-                                                                               { idx: { cached: false,
-                                                                                        pushPath: false,
-                                                                                        path: [
-                                                                                               { tag: 'value',
-                                                                                                 value: { value: _descriptor_8.toValue(4n),
-                                                                                                          alignment: _descriptor_8.alignment() } }] } },
-                                                                               { idx: { cached: false,
-                                                                                        pushPath: false,
-                                                                                        path: [
-                                                                                               { tag: 'value',
-                                                                                                 value: { value: _descriptor_0.toValue(user2_id_0),
-                                                                                                          alignment: _descriptor_0.alignment() } }] } },
-                                                                               { popeq: { cached: false,
-                                                                                          result: undefined } }]).value)
-                                      ===
-                                      0;
-    const compatible_0 = user1_age_verified_0 && user2_age_verified_0
-                         &&
-                         user1_location_verified_0
-                         &&
-                         user2_location_verified_0;
-    if (compatible_0) {
-      const tmp_0 = [user1_id_0, user2_id_0];
-      Contract._query(context,
-                      partialProofData,
-                      [
-                       { idx: { cached: false,
-                                pushPath: true,
-                                path: [
-                                       { tag: 'value',
-                                         value: { value: _descriptor_8.toValue(6n),
-                                                  alignment: _descriptor_8.alignment() } }] } },
-                       { push: { storage: false,
-                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(tmp_0),
-                                                                              alignment: _descriptor_3.alignment() }).encode() } },
-                       { push: { storage: true,
-                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(true),
-                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                       { ins: { cached: false, n: 1 } },
-                       { ins: { cached: true, n: 1 } }]);
-      const tmp_1 = [user2_id_0, user1_id_0];
-      Contract._query(context,
-                      partialProofData,
-                      [
-                       { idx: { cached: false,
-                                pushPath: true,
-                                path: [
-                                       { tag: 'value',
-                                         value: { value: _descriptor_8.toValue(6n),
-                                                  alignment: _descriptor_8.alignment() } }] } },
-                       { push: { storage: false,
-                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(tmp_1),
-                                                                              alignment: _descriptor_3.alignment() }).encode() } },
-                       { push: { storage: true,
-                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(true),
-                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                       { ins: { cached: false, n: 1 } },
-                       { ins: { cached: true, n: 1 } }]);
-      const tmp_2 = 1n;
-      Contract._query(context,
-                      partialProofData,
-                      [
-                       { idx: { cached: false,
-                                pushPath: true,
-                                path: [
-                                       { tag: 'value',
-                                         value: { value: _descriptor_8.toValue(1n),
-                                                  alignment: _descriptor_8.alignment() } }] } },
-                       { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                              { value: _descriptor_6.toValue(tmp_2),
-                                                alignment: _descriptor_6.alignment() }
-                                                .value
-                                            )) } },
-                       { ins: { cached: true, n: 1 } }]);
-    }
-    return compatible_0;
-  }
-  _check_verified_match_0(context, partialProofData, user1_id_0, user2_id_0) {
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user1_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User 1 does not exist');
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user2_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User 2 does not exist');
-    const tmp_0 = [user1_id_0, user2_id_0];
-    return _descriptor_2.fromValue(Contract._query(context,
-                                                   partialProofData,
-                                                   [
-                                                    { dup: { n: 0 } },
-                                                    { idx: { cached: false,
-                                                             pushPath: false,
-                                                             path: [
-                                                                    { tag: 'value',
-                                                                      value: { value: _descriptor_8.toValue(6n),
-                                                                               alignment: _descriptor_8.alignment() } }] } },
-                                                    { push: { storage: false,
-                                                              value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(tmp_0),
-                                                                                                           alignment: _descriptor_3.alignment() }).encode() } },
-                                                    'member',
-                                                    { popeq: { cached: true,
-                                                               result: undefined } }]).value);
-  }
-  _get_verification_status_0(context, partialProofData, user_id_0) {
-    __compactRuntime.assert(_descriptor_2.fromValue(Contract._query(context,
-                                                                    partialProofData,
-                                                                    [
-                                                                     { dup: { n: 0 } },
-                                                                     { idx: { cached: false,
-                                                                              pushPath: false,
-                                                                              path: [
-                                                                                     { tag: 'value',
-                                                                                       value: { value: _descriptor_8.toValue(2n),
-                                                                                                alignment: _descriptor_8.alignment() } }] } },
-                                                                     { push: { storage: false,
-                                                                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                            alignment: _descriptor_0.alignment() }).encode() } },
-                                                                     'member',
-                                                                     { popeq: { cached: true,
-                                                                                result: undefined } }]).value),
-                            'User does not exist');
-    const age_verified_0 = _descriptor_2.fromValue(Contract._query(context,
-                                                                   partialProofData,
-                                                                   [
-                                                                    { dup: { n: 0 } },
-                                                                    { idx: { cached: false,
-                                                                             pushPath: false,
-                                                                             path: [
-                                                                                    { tag: 'value',
-                                                                                      value: { value: _descriptor_8.toValue(3n),
-                                                                                               alignment: _descriptor_8.alignment() } }] } },
-                                                                    { push: { storage: false,
-                                                                              value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                           alignment: _descriptor_0.alignment() }).encode() } },
-                                                                    'member',
-                                                                    { popeq: { cached: true,
-                                                                               result: undefined } }]).value)
-                           &&
-                           _descriptor_4.fromValue(Contract._query(context,
-                                                                   partialProofData,
-                                                                   [
-                                                                    { dup: { n: 0 } },
-                                                                    { idx: { cached: false,
-                                                                             pushPath: false,
-                                                                             path: [
-                                                                                    { tag: 'value',
-                                                                                      value: { value: _descriptor_8.toValue(3n),
-                                                                                               alignment: _descriptor_8.alignment() } }] } },
-                                                                    { idx: { cached: false,
-                                                                             pushPath: false,
-                                                                             path: [
-                                                                                    { tag: 'value',
-                                                                                      value: { value: _descriptor_0.toValue(user_id_0),
-                                                                                               alignment: _descriptor_0.alignment() } }] } },
-                                                                    { popeq: { cached: false,
-                                                                               result: undefined } }]).value)
-                           ===
-                           0;
-    const location_verified_0 = _descriptor_2.fromValue(Contract._query(context,
-                                                                        partialProofData,
-                                                                        [
-                                                                         { dup: { n: 0 } },
-                                                                         { idx: { cached: false,
-                                                                                  pushPath: false,
-                                                                                  path: [
-                                                                                         { tag: 'value',
-                                                                                           value: { value: _descriptor_8.toValue(4n),
-                                                                                                    alignment: _descriptor_8.alignment() } }] } },
-                                                                         { push: { storage: false,
-                                                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
-                                                                         'member',
-                                                                         { popeq: { cached: true,
-                                                                                    result: undefined } }]).value)
-                                &&
-                                _descriptor_4.fromValue(Contract._query(context,
-                                                                        partialProofData,
-                                                                        [
-                                                                         { dup: { n: 0 } },
-                                                                         { idx: { cached: false,
-                                                                                  pushPath: false,
-                                                                                  path: [
-                                                                                         { tag: 'value',
-                                                                                           value: { value: _descriptor_8.toValue(4n),
-                                                                                                    alignment: _descriptor_8.alignment() } }] } },
-                                                                         { idx: { cached: false,
-                                                                                  pushPath: false,
-                                                                                  path: [
-                                                                                         { tag: 'value',
-                                                                                           value: { value: _descriptor_0.toValue(user_id_0),
-                                                                                                    alignment: _descriptor_0.alignment() } }] } },
-                                                                         { popeq: { cached: false,
-                                                                                    result: undefined } }]).value)
-                                ===
-                                0;
-    const income_verified_0 = _descriptor_2.fromValue(Contract._query(context,
-                                                                      partialProofData,
-                                                                      [
-                                                                       { dup: { n: 0 } },
-                                                                       { idx: { cached: false,
-                                                                                pushPath: false,
-                                                                                path: [
-                                                                                       { tag: 'value',
-                                                                                         value: { value: _descriptor_8.toValue(5n),
-                                                                                                  alignment: _descriptor_8.alignment() } }] } },
-                                                                       { push: { storage: false,
-                                                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(user_id_0),
-                                                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
-                                                                       'member',
-                                                                       { popeq: { cached: true,
-                                                                                  result: undefined } }]).value)
-                              &&
-                              _descriptor_4.fromValue(Contract._query(context,
-                                                                      partialProofData,
-                                                                      [
-                                                                       { dup: { n: 0 } },
-                                                                       { idx: { cached: false,
-                                                                                pushPath: false,
-                                                                                path: [
-                                                                                       { tag: 'value',
-                                                                                         value: { value: _descriptor_8.toValue(5n),
-                                                                                                  alignment: _descriptor_8.alignment() } }] } },
-                                                                       { idx: { cached: false,
-                                                                                pushPath: false,
-                                                                                path: [
-                                                                                       { tag: 'value',
-                                                                                         value: { value: _descriptor_0.toValue(user_id_0),
-                                                                                                  alignment: _descriptor_0.alignment() } }] } },
-                                                                       { popeq: { cached: false,
-                                                                                  result: undefined } }]).value)
-                              ===
-                              0;
-    return [age_verified_0, location_verified_0, income_verified_0];
+  _equal_3(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
   }
   static _query(context, partialProofData, prog) {
     var res;
@@ -1518,35 +744,7 @@ function ledger(state) {
     privateTranscriptOutputs: []
   };
   return {
-    get total_users() {
-      return _descriptor_7.fromValue(Contract._query(context,
-                                                     partialProofData,
-                                                     [
-                                                      { dup: { n: 0 } },
-                                                      { idx: { cached: false,
-                                                               pushPath: false,
-                                                               path: [
-                                                                      { tag: 'value',
-                                                                        value: { value: _descriptor_8.toValue(0n),
-                                                                                 alignment: _descriptor_8.alignment() } }] } },
-                                                      { popeq: { cached: false,
-                                                                 result: undefined } }]).value);
-    },
-    get nonce() {
-      return _descriptor_7.fromValue(Contract._query(context,
-                                                     partialProofData,
-                                                     [
-                                                      { dup: { n: 0 } },
-                                                      { idx: { cached: false,
-                                                               pushPath: false,
-                                                               path: [
-                                                                      { tag: 'value',
-                                                                        value: { value: _descriptor_8.toValue(1n),
-                                                                                 alignment: _descriptor_8.alignment() } }] } },
-                                                      { popeq: { cached: true,
-                                                                 result: undefined } }]).value);
-    },
-    user_statuses: {
+    verified_identities: {
       isEmpty(...args_0) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
@@ -1559,12 +757,12 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(2n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(0n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         'size',
                                                         { push: { storage: false,
-                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(0n),
-                                                                                                               alignment: _descriptor_7.alignment() }).encode() } },
+                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_5.toValue(0n),
+                                                                                                               alignment: _descriptor_5.alignment() }).encode() } },
                                                         'eq',
                                                         { popeq: { cached: true,
                                                                    result: undefined } }]).value);
@@ -1573,7 +771,7 @@ function ledger(state) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_7.fromValue(Contract._query(context,
+        return _descriptor_5.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
                                                         { dup: { n: 0 } },
@@ -1581,8 +779,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(2n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(0n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         'size',
                                                         { popeq: { cached: true,
                                                                    result: undefined } }]).value);
@@ -1595,7 +793,7 @@ function ledger(state) {
         if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
           __compactRuntime.type_error('member',
                                       'argument 1',
-                                      'DemoDatingPlatform.compact line 23 char 1',
+                                      'UnifiedDatingPlatform.compact line 8 char 1',
                                       'Uint<0..4294967295>',
                                       key_0)
         }
@@ -1607,8 +805,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(2n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(0n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         { push: { storage: false,
                                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(key_0),
                                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
@@ -1624,7 +822,225 @@ function ledger(state) {
         if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
           __compactRuntime.type_error('lookup',
                                       'argument 1',
-                                      'DemoDatingPlatform.compact line 23 char 1',
+                                      'UnifiedDatingPlatform.compact line 8 char 1',
+                                      'Uint<0..4294967295>',
+                                      key_0)
+        }
+        return _descriptor_2.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(0n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_0.toValue(key_0),
+                                                                                   alignment: _descriptor_0.alignment() } }] } },
+                                                        { popeq: { cached: false,
+                                                                   result: undefined } }]).value);
+      },
+      [Symbol.iterator](...args_0) {
+        if (args_0.length !== 0) {
+          throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
+        }
+        const self_0 = state.asArray()[0];
+        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_2.fromValue(value.value)    ];  })[Symbol.iterator]();
+      }
+    },
+    identity_hashes: {
+      isEmpty(...args_0) {
+        if (args_0.length !== 0) {
+          throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
+        }
+        return _descriptor_2.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(1n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        'size',
+                                                        { push: { storage: false,
+                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_5.toValue(0n),
+                                                                                                               alignment: _descriptor_5.alignment() }).encode() } },
+                                                        'eq',
+                                                        { popeq: { cached: true,
+                                                                   result: undefined } }]).value);
+      },
+      size(...args_0) {
+        if (args_0.length !== 0) {
+          throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
+        }
+        return _descriptor_5.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(1n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        'size',
+                                                        { popeq: { cached: true,
+                                                                   result: undefined } }]).value);
+      },
+      member(...args_0) {
+        if (args_0.length !== 1) {
+          throw new __compactRuntime.CompactError(`member: expected 1 argument, received ${args_0.length}`);
+        }
+        const key_0 = args_0[0];
+        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
+          __compactRuntime.type_error('member',
+                                      'argument 1',
+                                      'UnifiedDatingPlatform.compact line 9 char 1',
+                                      'Uint<0..4294967295>',
+                                      key_0)
+        }
+        return _descriptor_2.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(1n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        { push: { storage: false,
+                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(key_0),
+                                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                                        'member',
+                                                        { popeq: { cached: true,
+                                                                   result: undefined } }]).value);
+      },
+      lookup(...args_0) {
+        if (args_0.length !== 1) {
+          throw new __compactRuntime.CompactError(`lookup: expected 1 argument, received ${args_0.length}`);
+        }
+        const key_0 = args_0[0];
+        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
+          __compactRuntime.type_error('lookup',
+                                      'argument 1',
+                                      'UnifiedDatingPlatform.compact line 9 char 1',
+                                      'Uint<0..4294967295>',
+                                      key_0)
+        }
+        return _descriptor_3.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(1n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_0.toValue(key_0),
+                                                                                   alignment: _descriptor_0.alignment() } }] } },
+                                                        { popeq: { cached: false,
+                                                                   result: undefined } }]).value);
+      },
+      [Symbol.iterator](...args_0) {
+        if (args_0.length !== 0) {
+          throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
+        }
+        const self_0 = state.asArray()[1];
+        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_3.fromValue(value.value)    ];  })[Symbol.iterator]();
+      }
+    },
+    age_verifications: {
+      isEmpty(...args_0) {
+        if (args_0.length !== 0) {
+          throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
+        }
+        return _descriptor_2.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(2n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        'size',
+                                                        { push: { storage: false,
+                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_5.toValue(0n),
+                                                                                                               alignment: _descriptor_5.alignment() }).encode() } },
+                                                        'eq',
+                                                        { popeq: { cached: true,
+                                                                   result: undefined } }]).value);
+      },
+      size(...args_0) {
+        if (args_0.length !== 0) {
+          throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
+        }
+        return _descriptor_5.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(2n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        'size',
+                                                        { popeq: { cached: true,
+                                                                   result: undefined } }]).value);
+      },
+      member(...args_0) {
+        if (args_0.length !== 1) {
+          throw new __compactRuntime.CompactError(`member: expected 1 argument, received ${args_0.length}`);
+        }
+        const key_0 = args_0[0];
+        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
+          __compactRuntime.type_error('member',
+                                      'argument 1',
+                                      'UnifiedDatingPlatform.compact line 10 char 1',
+                                      'Uint<0..4294967295>',
+                                      key_0)
+        }
+        return _descriptor_2.fromValue(Contract._query(context,
+                                                       partialProofData,
+                                                       [
+                                                        { dup: { n: 0 } },
+                                                        { idx: { cached: false,
+                                                                 pushPath: false,
+                                                                 path: [
+                                                                        { tag: 'value',
+                                                                          value: { value: _descriptor_1.toValue(2n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
+                                                        { push: { storage: false,
+                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(key_0),
+                                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                                        'member',
+                                                        { popeq: { cached: true,
+                                                                   result: undefined } }]).value);
+      },
+      lookup(...args_0) {
+        if (args_0.length !== 1) {
+          throw new __compactRuntime.CompactError(`lookup: expected 1 argument, received ${args_0.length}`);
+        }
+        const key_0 = args_0[0];
+        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
+          __compactRuntime.type_error('lookup',
+                                      'argument 1',
+                                      'UnifiedDatingPlatform.compact line 10 char 1',
                                       'Uint<0..4294967295>',
                                       key_0)
         }
@@ -1636,8 +1052,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(2n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(2n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         { idx: { cached: false,
                                                                  pushPath: false,
                                                                  path: [
@@ -1655,7 +1071,7 @@ function ledger(state) {
         return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_1.fromValue(value.value)    ];  })[Symbol.iterator]();
       }
     },
-    age_verifications: {
+    location_verifications: {
       isEmpty(...args_0) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
@@ -1668,12 +1084,12 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(3n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(3n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         'size',
                                                         { push: { storage: false,
-                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(0n),
-                                                                                                               alignment: _descriptor_7.alignment() }).encode() } },
+                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_5.toValue(0n),
+                                                                                                               alignment: _descriptor_5.alignment() }).encode() } },
                                                         'eq',
                                                         { popeq: { cached: true,
                                                                    result: undefined } }]).value);
@@ -1682,7 +1098,7 @@ function ledger(state) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_7.fromValue(Contract._query(context,
+        return _descriptor_5.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
                                                         { dup: { n: 0 } },
@@ -1690,8 +1106,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(3n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(3n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         'size',
                                                         { popeq: { cached: true,
                                                                    result: undefined } }]).value);
@@ -1704,7 +1120,7 @@ function ledger(state) {
         if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
           __compactRuntime.type_error('member',
                                       'argument 1',
-                                      'DemoDatingPlatform.compact line 26 char 1',
+                                      'UnifiedDatingPlatform.compact line 11 char 1',
                                       'Uint<0..4294967295>',
                                       key_0)
         }
@@ -1716,8 +1132,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(3n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(3n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         { push: { storage: false,
                                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(key_0),
                                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
@@ -1733,11 +1149,11 @@ function ledger(state) {
         if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
           __compactRuntime.type_error('lookup',
                                       'argument 1',
-                                      'DemoDatingPlatform.compact line 26 char 1',
+                                      'UnifiedDatingPlatform.compact line 11 char 1',
                                       'Uint<0..4294967295>',
                                       key_0)
         }
-        return _descriptor_4.fromValue(Contract._query(context,
+        return _descriptor_2.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
                                                         { dup: { n: 0 } },
@@ -1745,8 +1161,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(3n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(3n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         { idx: { cached: false,
                                                                  pushPath: false,
                                                                  path: [
@@ -1761,10 +1177,10 @@ function ledger(state) {
           throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
         }
         const self_0 = state.asArray()[3];
-        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_4.fromValue(value.value)    ];  })[Symbol.iterator]();
+        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_2.fromValue(value.value)    ];  })[Symbol.iterator]();
       }
     },
-    location_verifications: {
+    compatibility_scores: {
       isEmpty(...args_0) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
@@ -1777,12 +1193,12 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(4n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(4n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         'size',
                                                         { push: { storage: false,
-                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(0n),
-                                                                                                               alignment: _descriptor_7.alignment() }).encode() } },
+                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_5.toValue(0n),
+                                                                                                               alignment: _descriptor_5.alignment() }).encode() } },
                                                         'eq',
                                                         { popeq: { cached: true,
                                                                    result: undefined } }]).value);
@@ -1791,7 +1207,7 @@ function ledger(state) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_7.fromValue(Contract._query(context,
+        return _descriptor_5.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
                                                         { dup: { n: 0 } },
@@ -1799,8 +1215,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(4n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(4n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         'size',
                                                         { popeq: { cached: true,
                                                                    result: undefined } }]).value);
@@ -1813,7 +1229,7 @@ function ledger(state) {
         if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
           __compactRuntime.type_error('member',
                                       'argument 1',
-                                      'DemoDatingPlatform.compact line 29 char 1',
+                                      'UnifiedDatingPlatform.compact line 12 char 1',
                                       'Uint<0..4294967295>',
                                       key_0)
         }
@@ -1825,8 +1241,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(4n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(4n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         { push: { storage: false,
                                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(key_0),
                                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
@@ -1842,11 +1258,11 @@ function ledger(state) {
         if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
           __compactRuntime.type_error('lookup',
                                       'argument 1',
-                                      'DemoDatingPlatform.compact line 29 char 1',
+                                      'UnifiedDatingPlatform.compact line 12 char 1',
                                       'Uint<0..4294967295>',
                                       key_0)
         }
-        return _descriptor_4.fromValue(Contract._query(context,
+        return _descriptor_1.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
                                                         { dup: { n: 0 } },
@@ -1854,8 +1270,8 @@ function ledger(state) {
                                                                  pushPath: false,
                                                                  path: [
                                                                         { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(4n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
+                                                                          value: { value: _descriptor_1.toValue(4n),
+                                                                                   alignment: _descriptor_1.alignment() } }] } },
                                                         { idx: { cached: false,
                                                                  pushPath: false,
                                                                  path: [
@@ -1870,225 +1286,7 @@ function ledger(state) {
           throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
         }
         const self_0 = state.asArray()[4];
-        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_4.fromValue(value.value)    ];  })[Symbol.iterator]();
-      }
-    },
-    income_verifications: {
-      isEmpty(...args_0) {
-        if (args_0.length !== 0) {
-          throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
-        }
-        return _descriptor_2.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(5n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        'size',
-                                                        { push: { storage: false,
-                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(0n),
-                                                                                                               alignment: _descriptor_7.alignment() }).encode() } },
-                                                        'eq',
-                                                        { popeq: { cached: true,
-                                                                   result: undefined } }]).value);
-      },
-      size(...args_0) {
-        if (args_0.length !== 0) {
-          throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
-        }
-        return _descriptor_7.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(5n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        'size',
-                                                        { popeq: { cached: true,
-                                                                   result: undefined } }]).value);
-      },
-      member(...args_0) {
-        if (args_0.length !== 1) {
-          throw new __compactRuntime.CompactError(`member: expected 1 argument, received ${args_0.length}`);
-        }
-        const key_0 = args_0[0];
-        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
-          __compactRuntime.type_error('member',
-                                      'argument 1',
-                                      'DemoDatingPlatform.compact line 32 char 1',
-                                      'Uint<0..4294967295>',
-                                      key_0)
-        }
-        return _descriptor_2.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(5n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        { push: { storage: false,
-                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(key_0),
-                                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
-                                                        'member',
-                                                        { popeq: { cached: true,
-                                                                   result: undefined } }]).value);
-      },
-      lookup(...args_0) {
-        if (args_0.length !== 1) {
-          throw new __compactRuntime.CompactError(`lookup: expected 1 argument, received ${args_0.length}`);
-        }
-        const key_0 = args_0[0];
-        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 4294967295n)) {
-          __compactRuntime.type_error('lookup',
-                                      'argument 1',
-                                      'DemoDatingPlatform.compact line 32 char 1',
-                                      'Uint<0..4294967295>',
-                                      key_0)
-        }
-        return _descriptor_4.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(5n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_0.toValue(key_0),
-                                                                                   alignment: _descriptor_0.alignment() } }] } },
-                                                        { popeq: { cached: false,
-                                                                   result: undefined } }]).value);
-      },
-      [Symbol.iterator](...args_0) {
-        if (args_0.length !== 0) {
-          throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
-        }
-        const self_0 = state.asArray()[5];
-        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_4.fromValue(value.value)    ];  })[Symbol.iterator]();
-      }
-    },
-    verified_matches: {
-      isEmpty(...args_0) {
-        if (args_0.length !== 0) {
-          throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
-        }
-        return _descriptor_2.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(6n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        'size',
-                                                        { push: { storage: false,
-                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_7.toValue(0n),
-                                                                                                               alignment: _descriptor_7.alignment() }).encode() } },
-                                                        'eq',
-                                                        { popeq: { cached: true,
-                                                                   result: undefined } }]).value);
-      },
-      size(...args_0) {
-        if (args_0.length !== 0) {
-          throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
-        }
-        return _descriptor_7.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(6n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        'size',
-                                                        { popeq: { cached: true,
-                                                                   result: undefined } }]).value);
-      },
-      member(...args_0) {
-        if (args_0.length !== 1) {
-          throw new __compactRuntime.CompactError(`member: expected 1 argument, received ${args_0.length}`);
-        }
-        const key_0 = args_0[0];
-        if (!(Array.isArray(key_0) && key_0.length === 2  && typeof(key_0[0]) === 'bigint' && key_0[0] >= 0n && key_0[0] <= 4294967295n && typeof(key_0[1]) === 'bigint' && key_0[1] >= 0n && key_0[1] <= 4294967295n)) {
-          __compactRuntime.type_error('member',
-                                      'argument 1',
-                                      'DemoDatingPlatform.compact line 35 char 1',
-                                      '[Uint<0..4294967295>, Uint<0..4294967295>]',
-                                      key_0)
-        }
-        return _descriptor_2.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(6n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        { push: { storage: false,
-                                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(key_0),
-                                                                                                               alignment: _descriptor_3.alignment() }).encode() } },
-                                                        'member',
-                                                        { popeq: { cached: true,
-                                                                   result: undefined } }]).value);
-      },
-      lookup(...args_0) {
-        if (args_0.length !== 1) {
-          throw new __compactRuntime.CompactError(`lookup: expected 1 argument, received ${args_0.length}`);
-        }
-        const key_0 = args_0[0];
-        if (!(Array.isArray(key_0) && key_0.length === 2  && typeof(key_0[0]) === 'bigint' && key_0[0] >= 0n && key_0[0] <= 4294967295n && typeof(key_0[1]) === 'bigint' && key_0[1] >= 0n && key_0[1] <= 4294967295n)) {
-          __compactRuntime.type_error('lookup',
-                                      'argument 1',
-                                      'DemoDatingPlatform.compact line 35 char 1',
-                                      '[Uint<0..4294967295>, Uint<0..4294967295>]',
-                                      key_0)
-        }
-        return _descriptor_2.fromValue(Contract._query(context,
-                                                       partialProofData,
-                                                       [
-                                                        { dup: { n: 0 } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_8.toValue(6n),
-                                                                                   alignment: _descriptor_8.alignment() } }] } },
-                                                        { idx: { cached: false,
-                                                                 pushPath: false,
-                                                                 path: [
-                                                                        { tag: 'value',
-                                                                          value: { value: _descriptor_3.toValue(key_0),
-                                                                                   alignment: _descriptor_3.alignment() } }] } },
-                                                        { popeq: { cached: false,
-                                                                   result: undefined } }]).value);
-      },
-      [Symbol.iterator](...args_0) {
-        if (args_0.length !== 0) {
-          throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
-        }
-        const self_0 = state.asArray()[6];
-        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_3.fromValue(key.value),      _descriptor_2.fromValue(value.value)    ];  })[Symbol.iterator]();
+        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_1.fromValue(value.value)    ];  })[Symbol.iterator]();
       }
     }
   };
@@ -2098,9 +1296,9 @@ const _emptyContext = {
   transactionContext: new __compactRuntime.QueryContext(new __compactRuntime.ContractState().data, __compactRuntime.dummyContractAddress())
 };
 const _dummyContract = new Contract({
-  getUserAge: (...args) => undefined,
-  getUserLocation: (...args) => undefined,
-  getUserIncome: (...args) => undefined
+  getBiometricData: (...args) => undefined,
+  getIdentitySalt: (...args) => undefined,
+  getUserAge: (...args) => undefined
 });
 const pureCircuits = {};
 const contractReferenceLocations = { tag: 'publicLedgerArray', indices: { } };

@@ -1,0 +1,81 @@
+pragma language_version >= 0.17.0;
+import CompactStandardLibrary;
+
+//our age verifying contract 
+export ledger age_verifications: Map<Uint<32>, Uint<8>>;
+
+// Age ranges for privacy-preserving verification
+// 1: 18-25, 2: 26-35, 3: 36-45, 4: 46-55, 5: 55+ 
+circuit get_age_range(age: Uint<8>): Uint<8> {
+    // Simple range determination using conditional logic
+    const range = age >= 18 && age <= 25 ? 1 :
+                  age >= 26 && age <= 35 ? 2 :
+                  age >= 36 && age <= 45 ? 3 :
+                  age >= 46 && age <= 55 ? 4 :
+                  age >= 56 ? 5 : 0;
+    
+    return range as Uint<8>;
+}
+
+// Verify age is above minimum threshold
+circuit verify_minimum_age(age: Uint<8>, minimum_age: Uint<8>): Boolean {
+    return age >= minimum_age;
+}
+
+// Check age compatibility between two ranges
+circuit check_age_compatibility(range1: Uint<8>, range2: Uint<8>, max_range_diff: Uint<8>): Boolean {
+    const diff = range1 > range2 ? range1 - range2 : range2 - range1;
+    return diff <= max_range_diff;
+}
+
+// Witness function for private age data
+witness getUserAge(): Uint<8>;
+
+// Main age verification circuit
+export circuit verify_age_range(user_id: Uint<32>, minimum_age: Uint<8>): [] {
+    const user_age = getUserAge();
+    
+    // Verify user is above minimum age (e.g., 18)
+    const is_adult = verify_minimum_age(user_age, minimum_age);
+    
+    // Get age range for privacy
+    const age_range = get_age_range(user_age);
+    
+    // Only store age range if user is adult, otherwise store 0
+    const verified_range = is_adult ? age_range : 0;
+    
+    age_verifications.insert(disclose(user_id), disclose(verified_range));
+}
+
+// Check compatibility between two users' age ranges
+export circuit check_age_match(user1_id: Uint<32>, user2_id: Uint<32>, max_range_diff: Uint<8>): Boolean {
+    const range1 = age_verifications.lookup(disclose(user1_id));
+    const range2 = age_verifications.lookup(disclose(user2_id));
+    
+    // Both users must have verified age ranges
+    const both_verified = range1 > 0 && range2 > 0;
+    const compatible = check_age_compatibility(range1, range2, max_range_diff);
+    
+    return both_verified && compatible;
+}
+
+// Test circuit
+export circuit test_age_verification(): [] {
+    // Test various ages and their ranges
+    const test_ages = [22, 30, 40, 50, 60];
+    const expected_ranges = [1, 2, 3, 4, 5];
+    
+    // Verify age range calculations
+    const range1 = get_age_range(22);  // Should be 1
+    const range2 = get_age_range(30);  // Should be 2
+    const range3 = get_age_range(40);  // Should be 3
+    
+    // Test compatibility (ranges 1 and 2 should be compatible with max_diff=1)
+    const compatible = check_age_compatibility(1, 2, 1);
+    const incompatible = check_age_compatibility(1, 4, 1);
+    
+    // Store test results
+    age_verifications.insert(disclose(1000), disclose(range1));
+    age_verifications.insert(disclose(2000), disclose(range2));
+    age_verifications.insert(disclose(3000), disclose(range3));
+}

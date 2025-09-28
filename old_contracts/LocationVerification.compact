@@ -1,0 +1,64 @@
+pragma language_version >= 0.17.0;
+import CompactStandardLibrary;
+
+// Simple location verification using a range-based approach
+// This proves proximity without revealing exact coordinates
+
+export ledger location_verifications: Map<Uint<32>, Boolean>;
+
+// Simplified approach: check if coordinates fall within overlapping ranges
+circuit check_coordinate_overlap(
+    coord1_min: Uint<16>, coord1_max: Uint<16>,
+    coord2_min: Uint<16>, coord2_max: Uint<16>
+): Boolean {
+    // Check if ranges overlap
+    const overlap1 = coord1_min <= coord2_max;
+    const overlap2 = coord2_min <= coord1_max;
+    return overlap1 && overlap2;
+}
+
+// Verify if two location ranges overlap (indicating proximity)
+circuit verify_location_overlap(
+    x1_min: Uint<16>, x1_max: Uint<16>, y1_min: Uint<16>, y1_max: Uint<16>,
+    x2_min: Uint<16>, x2_max: Uint<16>, y2_min: Uint<16>, y2_max: Uint<16>
+): Boolean {
+    const x_overlap = check_coordinate_overlap(x1_min, x1_max, x2_min, x2_max);
+    const y_overlap = check_coordinate_overlap(y1_min, y1_max, y2_min, y2_max);
+    return x_overlap && y_overlap;
+}
+
+// Witness functions for private location ranges
+witness getUserLocationRange1(): [Uint<16>, Uint<16>, Uint<16>, Uint<16>]; // [x_min, x_max, y_min, y_max]
+witness getUserLocationRange2(): [Uint<16>, Uint<16>, Uint<16>, Uint<16>]; // [x_min, x_max, y_min, y_max]
+
+// Main circuit: verify if two users are in overlapping location ranges
+export circuit verify_proximity_ranges(user1_id: Uint<32>, user2_id: Uint<32>): [] {
+    const range1 = getUserLocationRange1();
+    const range2 = getUserLocationRange2();
+    
+    const is_nearby = verify_location_overlap(
+        range1[0], range1[1], range1[2], range1[3],  // user1 x_min, x_max, y_min, y_max
+        range2[0], range2[1], range2[2], range2[3]   // user2 x_min, x_max, y_min, y_max
+    );
+    
+    const verification_key = (disclose(user1_id) + disclose(user2_id)) as Uint<32>;
+    location_verifications.insert(verification_key, disclose(is_nearby));
+}
+
+// Test circuit with sample ranges
+export circuit test_location_ranges(): [] {
+    // Test case 1: Overlapping ranges (should be true)
+    const nearby = verify_location_overlap(
+        100, 200, 300, 400,  // Range 1: x[100-200], y[300-400]
+        150, 250, 350, 450   // Range 2: x[150-250], y[350-450] - overlaps!
+    );
+    
+    // Test case 2: Non-overlapping ranges (should be false)
+    const far = verify_location_overlap(
+        100, 200, 300, 400,  // Range 1: x[100-200], y[300-400]
+        500, 600, 700, 800   // Range 2: x[500-600], y[700-800] - no overlap
+    );
+    
+    location_verifications.insert(1, disclose(nearby)); // Should be true
+    location_verifications.insert(2, disclose(far));    // Should be false
+}
