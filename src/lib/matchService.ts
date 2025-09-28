@@ -137,7 +137,7 @@ class MatchService {
     const notification: Notification = {
       id: `notif_approved_${matchId}`,
       type: 'match_approved',
-      title: 'Match Approved! 🎉',
+      title: 'Match Approved!',
       message: `You and ${pendingMatch.fromUser} are now connected! ${compatibility}% compatibility verified through ZK proofs.`,
       timestamp: new Date(),
       read: false

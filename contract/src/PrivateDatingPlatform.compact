@@ -1,12 +1,4 @@
-import CompactStandardLibrary;
-
-// ============================================================================
-//  Type Definitions
-// ============================================================================
-
-// Structure to hold a user's private profile data commitments.
-// We store hashes of the data, not the data itself.
-// The circuit will receive the raw data via witnesses and verify it against these hashes.
+import CompactStandardLibrary; //bring in the standard library
 struct UserProfile {
   // Opaque hash of the user's age.
   ageHash: Bytes<32>,
@@ -16,47 +8,27 @@ struct UserProfile {
   bioHash: Bytes<32>
 }
 
-// ============================================================================
-//  Ledger State
-// ============================================================================
-
-// Maps a user's address to their encrypted/committed profile.
 export sealed ledger profiles: Map<Address, UserProfile>;
 
-// Maps a user's address to a list of addresses who have requested a match.
-// For this proof-of-concept, we'll limit the number of pending requests per user.
+//Maps a user's address to a list of addresses who have requested a match.
+/ For this proof-of-concept, we'll limit the number of pending requests per user.
 export ledger matchRequests: Map<Address, Vector<8, Address>>;
 
 
-// ============================================================================
-//  Witness Declarations
-// ============================================================================
 
-// Witness to get the caller's private profile data for registration.
 // Returns: [age, location, bio]
 witness getMyPrivateProfileForRegistration(): [Uint<8>, Bytes<32>, Bytes<256>];
 
-// Witness to get the caller's and target's private data for matching logic.
-// This is a complex step. For the PoC, the witness implementation will need
-// a way to access both users' data securely off-chain.
+
 // Returns: [myAge, myLocation, targetAge, targetLocation]
 witness getMatchData(target: Address): [Uint<8>, Bytes<32>, Uint<8>, Bytes<32>];
 
 
-// ============================================================================
-//  Constructor
-// ============================================================================
 
 constructor() {
-  // The constructor is called once when the contract is deployed.
-  // We can use it to initialize any state if needed, but for Maps,
-  // they are implicitly initialized.
+ 
 }
 
-
-// ============================================================================
-//  Exported Circuits (Entry Points)
-// ============================================================================
 
 // Registers a new user profile on the ledger.
 export circuit register(): [] {

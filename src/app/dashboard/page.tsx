@@ -49,7 +49,7 @@ export default function DashboardPage() {
   const handleSendMatchRequest = async (targetAddress: string, targetName: string) => {
     setIsRequestingMatch(true);
     try {
-      console.log(`🌙 MIDNIGHT HACKATHON - Sending ZK match request to ${targetName}! 🏆`);
+      console.log(`Sending ZK match request to ${targetName}`);
       
       // Show the real CONTRACT_SERVICE integration
       const result = await contractService.callFunction('requestMatch', [targetAddress]);
@@ -85,7 +85,7 @@ export default function DashboardPage() {
       
       const pendingMatches = matchService.getPendingMatches();
       setStats(prev => ({ ...prev, pendingRequests: pendingMatches.length }));
-      toast.success('Match approved! 🎉');
+      toast.success('Match approved!');
     } catch (error) {
       console.error('Failed to approve match:', error);
       toast.error('Failed to approve match');
@@ -125,7 +125,7 @@ export default function DashboardPage() {
 
     setIsRequestingMatch(true);
     try {
-      console.log(`🌙 MIDNIGHT HACKATHON - Manual ZK match request to ${matchRequestTarget}! 🏆`);
+      console.log(`Manual ZK match request to ${matchRequestTarget}`);
       
       const result = await contractService.callFunction('requestMatch', [matchRequestTarget]);
       await matchService.sendMatchRequest('midnig-5678', matchRequestTarget);

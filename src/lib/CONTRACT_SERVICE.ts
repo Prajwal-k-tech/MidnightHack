@@ -1,9 +1,10 @@
 import { CONTRACT_CONFIG, UserStatus } from './CONTRACT_CONFIG';
 import { useWalletStore } from '@/lib/stores/walletStore';
+import { realMidnightContractService } from './REAL_CONTRACT_SERVICE';
 import { toast } from 'sonner';
 
-// 🏆 KYC WINNER PATTERN: Real Midnight integration
-console.log('🌙 Loading CONTRACT_SERVICE with KYC winner pattern integration! 🏆');
+// Real Midnight blockchain integration
+console.log('Loading CONTRACT_SERVICE with real Midnight contract integration');
 
 // Dynamic imports for browser-only dependencies
 let locationService: any = null;
@@ -78,80 +79,72 @@ export class ContractService {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // 🌙 REAL MIDNIGHT COMPACT CONTRACT CALLS
-    console.log(`🔗 Calling Midnight contract function: ${functionName}`);
+    // Real Midnight Compact contract calls
+    console.log(`Calling contract function: ${functionName}`);
     
     switch (functionName) {
       case 'register': {
         const [age, location, bio] = params;
-        const userId = walletState.address;
         
-        // Generate ZK-compatible commitments
-        const ageHash = await this.generateZKHash(age.toString());
-        const locationHash = await this.generateZKHash(location);
-        const bioHash = await this.generateZKHash(bio);
+        console.log('Calling real Midnight contract for registration');
         
-        console.log('🌙 MIDNIGHT HACKATHON - Real ZK commitments generated! 🏆');
-        console.log('📊 Age commitment (SHA-256):', ageHash.substring(0, 16) + '...');
-        console.log('📍 Location commitment (SHA-256):', locationHash.substring(0, 16) + '...');  
-        console.log('📝 Bio commitment (SHA-256):', bioHash.substring(0, 16) + '...');
-        console.log('🔐 Private data protected - only hashes stored on Midnight blockchain!');
-        
-        // Store in blockchain state (simulated for demo)
-        this.mockState.userStatuses[userId] = UserStatus.Active;
-        this.mockState.profileHashes[userId] = `${ageHash}:${locationHash}:${bioHash}`;
-        this.mockState.totalUsers++;
-        this.saveState();
-        
-        return { 
-          success: true, 
-          txHash: `0x${Math.random().toString(16).substring(2, 18)}`, 
-          message: `✅ Profile registered on Midnight blockchain`,
-          zkProofs: { ageHash, locationHash, bioHash }
-        };
+        try {
+          const result = await realMidnightContractService.register(age, location, bio);
+          
+          return { 
+            success: result.success, 
+            txHash: result.txHash, 
+            message: result.message,
+            zkProofGenerated: true
+          };
+        } catch (error) {
+          console.error('Midnight contract registration failed:', error);
+          throw new Error('Registration failed on Midnight blockchain');
+        }
       }
       case 'requestMatch': {
         const [targetAddress] = params;
-        const requester = walletState.address;
         
-        console.log(`💕 MIDNIGHT HACKATHON - ZK match request: ${requester} → ${targetAddress} 🏆`);
-        console.log('🧮 Generating zero-knowledge compatibility proof...');
-        console.log('🔐 Verifying age/location compatibility without revealing actual data...');
+        console.log('Calling real Midnight contract for match request');
         
-        // Simulate ZK proof generation (like KYC winner)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log('✅ ZK proof generated and verified - privacy preserved!');
-        
-        // Add to match requests (blockchain state)
-        if (!this.matchRequests.has(targetAddress)) {
-          this.matchRequests.set(targetAddress, []);
+        try {
+          const result = await realMidnightContractService.requestMatch(targetAddress);
+          
+          return {
+            success: result.success,
+            txHash: result.txHash,
+            message: result.message,
+            zkProofGenerated: true
+          };
+        } catch (error) {
+          console.error('Midnight contract match request failed:', error);
+          throw new Error('Match request failed on Midnight blockchain');
         }
-        this.matchRequests.get(targetAddress)?.push(requester);
-        
-        return {
-          success: true,
-          txHash: `0x${Math.random().toString(16).substring(2, 18)}`,
-          message: `🔐 ZK match request sent to ${targetAddress}`,
-          zkProofGenerated: true
-        };
       }
       case 'approveMatch': {
         const [requesterAddress] = params;
         const approver = walletState.address;
         
-        console.log(`✅ Approving match: ${approver} ← ${requesterAddress}`);
+        console.log(`Approving match: ${approver} ← ${requesterAddress}`);
         
-        // Remove from requests and create match
-        const requests = this.matchRequests.get(approver) || [];
-        const newRequests = requests.filter(addr => addr !== requesterAddress);
-        this.matchRequests.set(approver, newRequests);
-        
-        return {
-          success: true,
-          txHash: `0x${Math.random().toString(16).substring(2, 18)}`,
-          message: `🎉 Match approved! Private data exchange initiated`,
-          matchEstablished: true
-        };
+        try {
+          const result = await realMidnightContractService.approveMatch(requesterAddress);
+          
+          // Remove from requests and create match
+          const requests = this.matchRequests.get(approver) || [];
+          const newRequests = requests.filter(addr => addr !== requesterAddress);
+          this.matchRequests.set(approver, newRequests);
+          
+          return {
+            success: result.success,
+            txHash: result.txHash,
+            message: result.message,
+            matchEstablished: true
+          };
+        } catch (error) {
+          console.error('Midnight contract match approval failed:', error);
+          throw new Error('Match approval failed on Midnight blockchain');
+        }
       }
       default:
         throw new Error(`Unknown function: ${functionName}`);
@@ -217,7 +210,7 @@ export class ContractService {
       }
     }
     
-    return this.callFunction('create_profile', [userId, JSON.stringify(profileData)]);
+    return this.callFunction('register', [profileData.age, profileData.locationHash || '', profileData.bio]);
   }
 
   // 📸 BIOMETRIC VERIFICATION WITH ZK PROOFS
@@ -236,7 +229,7 @@ export class ContractService {
       }
     }
     
-    return this.callFunction('create_profile', [userId, JSON.stringify(profileData)]);
+    return this.callFunction('register', [profileData.age, profileData.locationHash || '', profileData.bio]);
   }
 
     // 🔍 PROXIMITY MATCHING

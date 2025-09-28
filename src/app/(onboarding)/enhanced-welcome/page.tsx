@@ -39,6 +39,7 @@ export default function EnhancedWelcomePage() {
   });
 
   const [cameraActive, setCameraActive] = useState(false);
+  const [biometricComplete, setBiometricComplete] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -48,7 +49,7 @@ export default function EnhancedWelcomePage() {
   const handleLocationVerification = async () => {
     setIsProcessing(true);
     try {
-      console.log('🌍 Starting location verification...');
+      console.log('Starting location verification...');
       const locService = await getLocationService();
       if (!locService) {
         throw new Error('Location service not available');
@@ -64,8 +65,7 @@ export default function EnhancedWelcomePage() {
       setVerificationStatus(prev => ({ ...prev, location: true }));
       toast.success('📍 Location verified privately!');
       
-      // Auto-advance to next step
-      setTimeout(() => setCurrentStep('biometric'), 1000);
+      // Location verified, user can manually proceed
     } catch (error: any) {
       toast.error(`Location verification failed: ${error.message}`);
     } finally {
@@ -75,19 +75,32 @@ export default function EnhancedWelcomePage() {
 
   // 📸 STEP 3: BIOMETRIC VERIFICATION
   const startBiometricVerification = async () => {
+    setIsProcessing(true);
     try {
-      if (!videoRef.current) return;
+      if (!videoRef.current) {
+        throw new Error('Video element not ready');
+      }
       
       const faceService = await getFaceVerificationService();
       if (!faceService) {
         throw new Error('Face verification service not available');
       }
       
+      console.log('Starting camera for biometric verification');
       await faceService.startCamera(videoRef.current);
       setCameraActive(true);
-      console.log('📸 Camera started for biometric verification');
+      toast.success('Camera started! Position your face in the frame');
     } catch (error: any) {
-      toast.error(`Camera access failed: ${error.message}`);
+      console.error('Camera access failed:', error);
+      if (error.message.includes('Permission denied')) {
+        toast.error('Camera permission denied. Please allow camera access and try again.');
+      } else if (error.message.includes('not available')) {
+        toast.error('Camera not available in this environment. You can skip this step.');
+      } else {
+        toast.error(`Camera access failed: ${error.message}`);
+      }
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -96,7 +109,7 @@ export default function EnhancedWelcomePage() {
     
     setIsProcessing(true);
     try {
-      console.log('🔐 Capturing biometric data...');
+      console.log('Capturing biometric data...');
       const faceService = await getFaceVerificationService();
       if (!faceService) {
         throw new Error('Face verification service not available');
@@ -122,8 +135,9 @@ export default function EnhancedWelcomePage() {
       faceService.stopCamera();
       setCameraActive(false);
       
-      toast.success('🔐 Biometric verification complete!');
-      setTimeout(() => setCurrentStep('complete'), 1000);
+      toast.success('Biometric verification complete!');
+      // Allow user to manually proceed instead of auto-advance
+      setBiometricComplete(true);
       
     } catch (error: any) {
       toast.error(`Biometric verification failed: ${error.message}`);
@@ -136,7 +150,7 @@ export default function EnhancedWelcomePage() {
   const handleCompleteRegistration = async () => {
     setIsProcessing(true);
     try {
-      console.log('🔌 Initializing Midnight Contract Service...');
+      console.log('Initializing Midnight Contract Service...');
       
       const userId = `user_${Date.now()}`;
       
@@ -149,7 +163,7 @@ export default function EnhancedWelcomePage() {
           { ...formData, privacyLevel: 'maximum' },
           faceData
         );
-        console.log('✅ Registered with full privacy features');
+        console.log('Registered with full privacy features');
       } else if (locationData) {
         // Location-based registration
         result = await contractService.registerWithLocation(
@@ -157,14 +171,14 @@ export default function EnhancedWelcomePage() {
           { ...formData, privacyLevel: 'high' },
           locationData
         );
-        console.log('✅ Registered with location privacy');
+        console.log('Registered with location privacy');
       } else {
         // Basic registration
-        result = await contractService.callFunction('create_profile', [userId, JSON.stringify(formData)]);
-        console.log('✅ Basic registration complete');
+        result = await contractService.callFunction('register', [formData.age, '', formData.bio]);
+        console.log('Basic registration complete');
       }
 
-      toast.success(`✅ User registered successfully: ${userId}`);
+      toast.success(`User registered successfully: ${userId}`);
       
       // Complete onboarding
       setHasCompletedOnboarding(true);
@@ -174,18 +188,17 @@ export default function EnhancedWelcomePage() {
       setTimeout(() => router.push('/'), 2000);
       
     } catch (error: any) {
-      console.error('❌ Registration failed:', error);
+      console.error('Registration failed:', error);
       toast.error(`Registration failed: ${error.message}`);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Auto-advance from basic info
+  // Validate basic info completion but don't auto-advance
   useEffect(() => {
     if (formData.age && formData.bio && currentStep === 'basic') {
       setVerificationStatus(prev => ({ ...prev, basic: true }));
-      setTimeout(() => setCurrentStep('location'), 500);
     }
   }, [formData.age, formData.bio, currentStep]);
 
@@ -248,6 +261,15 @@ export default function EnhancedWelcomePage() {
                   className="bg-black/50 border-purple-500/30 text-white mt-1"
                 />
               </div>
+              
+              {verificationStatus.basic && (
+                <Button
+                  onClick={() => setCurrentStep('location')}
+                  className="w-full bg-purple-600 hover:bg-purple-700 mt-4"
+                >
+                  Continue to Location Privacy
+                </Button>
+              )}
             </CardContent>
           </Card>
         );
@@ -264,7 +286,7 @@ export default function EnhancedWelcomePage() {
                 Enable location-based matching with zero-knowledge proofs
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <Button
                 onClick={handleLocationVerification}
                 disabled={isProcessing}
@@ -273,13 +295,28 @@ export default function EnhancedWelcomePage() {
                 {isProcessing ? (
                   <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Generating ZK Proof...</>
                 ) : (
-                  <>🌍 Enable Location Privacy</>
+                  <>Enable Location Privacy</>
                 )}
               </Button>
+              
+              <Button
+                onClick={() => setCurrentStep('biometric')}
+                variant="outline"
+                className="w-full border-purple-500/30 text-purple-200 hover:bg-purple-600/20"
+              >
+                Skip Location (Lower Privacy Score)
+              </Button>
+              
               {verificationStatus.location && (
                 <div className="flex items-center justify-center mt-4 text-green-400">
                   <CheckCircle className="h-5 w-5 mr-2" />
                   Location verification complete!
+                  <Button
+                    onClick={() => setCurrentStep('biometric')}
+                    className="ml-4 bg-green-600 hover:bg-green-700"
+                  >
+                    Continue to Biometric
+                  </Button>
                 </div>
               )}
             </CardContent>
@@ -301,28 +338,57 @@ export default function EnhancedWelcomePage() {
             <CardContent>
               <div className="space-y-4">
                 {cameraActive && (
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    muted
-                    className="w-full max-w-md mx-auto rounded-lg"
-                  />
+                  <div className="relative">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      muted
+                      className="w-full max-w-md mx-auto rounded-lg bg-gray-800"
+                    />
+                    <Button
+                      onClick={captureBiometric}
+                      disabled={isProcessing}
+                      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-red-600 hover:bg-red-700"
+                    >
+                      {isProcessing ? 'Processing...' : 'Capture'}
+                    </Button>
+                  </div>
                 )}
+                
+                {!cameraActive && (
+                  <Button
+                    onClick={startBiometricVerification}  
+                    disabled={isProcessing}
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                  >
+                    {isProcessing ? (
+                      <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing...</>
+                    ) : (
+                      <>Start Biometric Verification</>
+                    )}
+                  </Button>
+                )}
+                
                 <Button
-                  onClick={startBiometricVerification}  
-                  disabled={isProcessing}
-                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  onClick={handleCompleteRegistration}
+                  variant="outline"
+                  className="w-full border-purple-500/30 text-purple-200 hover:bg-purple-600/20"
                 >
-                  {isProcessing ? (
-                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing Face Data...</>
-                  ) : (
-                    <>📱 Start Biometric Verification</>
-                  )}
+                  Skip Biometric (Complete Registration)
                 </Button>
-                {verificationStatus.biometric && (
-                  <div className="flex items-center justify-center mt-4 text-green-400">
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    Biometric verification complete!
+                
+                {(verificationStatus.biometric || biometricComplete) && (
+                  <div className="flex flex-col items-center space-y-4 mt-4">
+                    <div className="flex items-center text-green-400">
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      Biometric verification complete!
+                    </div>
+                    <Button
+                      onClick={() => setCurrentStep('complete')}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Continue to Complete Registration
+                    </Button>
                   </div>
                 )}
               </div>
@@ -380,7 +446,7 @@ export default function EnhancedWelcomePage() {
                   {isProcessing ? (
                     <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Creating Private Profile...</>
                   ) : (
-                    <>🚀 Create Private Profile</>
+                    <>Create Private Profile</>
                   )}
                 </Button>
               </div>
@@ -394,8 +460,8 @@ export default function EnhancedWelcomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 py-8">
-      <div className="container mx-auto px-4 max-w-6xl lg:max-w-7xl">
+    <div className="min-h-screen w-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 px-4 py-8">
+      <div className="w-full max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
