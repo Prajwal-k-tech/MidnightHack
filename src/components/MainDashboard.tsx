@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Users, MessageCircle, Shield, Zap, Target } from 'lucide-react';
+import { Heart, Users, MessageCircle, Shield, Zap, Target, Sparkles } from 'lucide-react';
 import { midnightContractService, UserProfile, MatchRequest, MatchResult } from '@/lib/services/midnightContractService';
+import SmartMatchingComponent from './SmartMatchingComponent';
 import { toast } from 'sonner';
 
 export function MainDashboard() {
@@ -215,6 +216,22 @@ export function MainDashboard() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Smart Matching Component */}
+      <Card className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-300/20">
+        <CardHeader>
+          <CardTitle className="text-violet-300 flex items-center gap-2">
+            <Sparkles className="w-5 h-5" />
+            Advanced ZK Matching Features
+          </CardTitle>
+          <CardDescription className="text-slate-400">
+            Explore cutting-edge privacy-preserving matching capabilities
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SmartMatchingComponent />
         </CardContent>
       </Card>
 

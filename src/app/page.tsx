@@ -20,7 +20,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isConnected && !hasCompletedOnboarding) {
-      router.push('/welcome');
+      router.push('/enhanced-welcome');
     }
   }, [isConnected, hasCompletedOnboarding, router]);
 

@@ -1,1 +1,20 @@
-{}
+{
+  "lib/CONTRACT_SERVICE.ts -> ./services/faceVerificationService": {
+    "id": "lib/CONTRACT_SERVICE.ts -> ./services/faceVerificationService",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_services_faceVerificationService_ts.js"
+    ]
+  },
+  "lib/CONTRACT_SERVICE.ts -> ./services/locationService": {
+    "id": "lib/CONTRACT_SERVICE.ts -> ./services/locationService",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_services_locationService_ts.js"
+    ]
+  },
+  "lib/services/locationService.ts -> crypto": {
+    "id": "lib/services/locationService.ts -> crypto",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_next_dist_compiled_crypto-browserify_index_js.js"
+    ]
+  }
+}

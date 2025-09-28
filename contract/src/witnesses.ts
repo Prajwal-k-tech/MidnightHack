@@ -1,5 +1,6 @@
 // Witness implementations for PrivateDatingPlatform contract
-// These functions provide private data to the ZK circuits
+// Based on KYC hackathon WINNER pattern - REAL MIDNIGHT ZK INTEGRATION! 🏆
+// These functions provide private data to the ZK circuits without revealing secrets
 
 import { createHash } from 'crypto';
 

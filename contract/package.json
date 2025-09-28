@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "setup": "ts-node cli.ts setup",
-    "compile": "echo 'Contract compilation requires Midnight SDK'",
+    "compile": "echo 'Contract compilation requires Midnight SDK - use: compact compile src/PrivateDatingPlatform.compact ./src/managed/dating'",
     "start": "ts-node cli.ts start", 
     "stop": "ts-node cli.ts stop",
     "deploy": "ts-node cli.ts deploy",
@@ -14,10 +14,11 @@
     "register": "ts-node cli.ts register",
     "match": "ts-node cli.ts match",
     "approve": "ts-node cli.ts approve",
-    "demo": "ts-node test-scripts/demo-script.ts",
-    "demo:full": "ts-node test-scripts/comprehensive-demo.ts",
+    "demo": "ts-node cli.ts demo",
+    "demo:hackathon": "ts-node cli.ts demo",
     "build": "tsc",
-    "test": "ts-node test-scripts/run-tests.ts"
+    "test": "ts-node test-scripts/run-tests.ts",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "midnight",
